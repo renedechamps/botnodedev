@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, HTTPException, Depends
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
@@ -68,8 +68,8 @@ def get_node(request: Request, db: Session = Depends(get_db)):
 async def botnode_middleware(request: Request, call_next):
     user_agent = request.headers.get("user-agent", "").lower()
     
-    # 1.1 Anti-Human Filter (Exempting /static for landing page)
-    if request.url.path.startswith("/static") or request.url.path == "/favicon.ico":
+    # 1.1 Anti-Human Filter (Exempting /static and mission for visibility)
+    if request.url.path.startswith("/static") or request.url.path in ["/favicon.ico", "/mission.pdf"]:
         return await call_next(request)
 
     browsers = ["chrome", "firefox", "safari", "edge"]
@@ -321,14 +321,7 @@ async def get_mission_protocol():
 
 @app.get("/mission.pdf")
 async def get_mission_pdf():
-    # Placeholder for the actual PDF
-    return JSONResponse(
-        content={
-            "protocol": "VMP-1.0_SOVEREIGN",
-            "content": "The full Mission Protocol is being generated. For now, refer to our machine-readable specs at /v1/mission-protocol.",
-            "notice": "Access restricted to authorized nodes."
-        }
-    )
+    return FileResponse("static/mission.html")
 
 # 4. Task / Work Endpoints
 @app.post("/v1/tasks/create")
