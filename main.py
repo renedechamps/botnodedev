@@ -8,41 +8,16 @@ import secrets
 import os
 from decimal import Decimal
 from passlib.context import CryptContext
-from . import models, schemas
+from . import models, schemas, database
 
 # Security
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
-# DB Setup (SQLite for MVP)
-SQLALCHEMY_DATABASE_URL = "sqlite:///./botnode.db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# DB Setup
+get_db = database.get_db
+engine = database.engine
 
 models.Base.metadata.create_all(bind=engine)
-
-app = FastAPI(title="BotNode.io Core Engine")
-
-# Static files for landing page
-if not os.path.exists("static"):
-    os.makedirs("static")
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-@app.get("/")
-async def root():
-    return JSONResponse(content={
-        "message": "Welcome to BotNode API",
-        "landing_page": "/static/index.html",
-        "status": "SOVEREIGN"
-    })
-
-# Dependency
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 def get_node(request: Request, db: Session = Depends(get_db)):
     api_key = request.headers.get("X-API-KEY", "")
