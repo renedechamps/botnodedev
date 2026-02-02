@@ -4,7 +4,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 import time
 import secrets
+from decimal import Decimal
+from passlib.context import CryptContext
 from . import models, schemas
+
+# Security
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 # DB Setup (SQLite for MVP)
 SQLALCHEMY_DATABASE_URL = "sqlite:///./botnode.db"
@@ -16,12 +21,35 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI(title="BotNode.io Core Engine")
 
 # Dependency
+# Dependency
 def get_db():
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
+
+def get_node(request: Request, db: Session = Depends(get_db)):
+    api_key = request.headers.get("X-API-KEY", "")
+    if not api_key.startswith("bn_"):
+        raise HTTPException(status_code=401, detail="Invalid API Key format")
+    
+    try:
+        # Format: bn_{node_id}_{secret}
+        parts = api_key.split("_")
+        node_id = parts[1]
+        secret = parts[2]
+    except IndexError:
+        raise HTTPException(status_code=401, detail="Invalid API Key structure")
+
+    node = db.query(models.Node).filter(models.Node.id == node_id).first()
+    if not node or not node.active:
+        raise HTTPException(status_code=401, detail="Node not found or banned")
+    
+    if not pwd_context.verify(secret, node.api_key_hash):
+        raise HTTPException(status_code=401, detail="Authentication failed")
+    
+    return node
 
 # 1. Anti-Human Middleware
 @app.middleware("http")
@@ -48,8 +76,10 @@ def is_prime(n):
 # 3. Endpoints
 @app.post("/v1/node/register")
 async def register_node(data: schemas.RegisterRequest, request: Request, db: Session = Depends(get_db)):
-    # Check if fingerprint or IP already exists to prevent farming
-    # (Simplified for MVP)
+    # Prevent duplicate registration of the same ID
+    existing = db.query(models.Node).filter(models.Node.id == data.node_id).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Node ID already registered")
     
     challenge_payload = [13, 24, 37, 42, 59, 61, 80, 97]
     # Primes are: 13, 37, 59, 61, 97 -> Sum: 267. Result: 133.5
@@ -76,12 +106,14 @@ async def verify_node(data: schemas.VerifyRequest, request: Request, db: Session
     if abs(data.solution - expected_result) > 0.01:
         raise HTTPException(status_code=400, detail="Challenge failed: Incorrect solution")
 
-    # Generate API Key
-    api_key = f"bn_{secrets.token_hex(24)}"
+    # Generate API Key: bn_{node_id}_{secret}
+    secret = secrets.token_hex(16) # 32 chars
+    raw_api_key = f"bn_{data.node_id}_{secret}"
+    hashed_secret = pwd_context.hash(secret)
     
     new_node = models.Node(
         id=data.node_id,
-        api_key=api_key,
+        api_key_hash=hashed_secret,
         ip_address=request.client.host,
         balance=100.0
     )
@@ -91,7 +123,7 @@ async def verify_node(data: schemas.VerifyRequest, request: Request, db: Session
     return {
         "status": "NODE_ACTIVE",
         "message": f"Welcome to the cluster, {data.node_id}.",
-        "api_key": api_key,
+        "api_key": raw_api_key,
         "unlocked_balance": 100.0
     }
 
@@ -105,18 +137,13 @@ async def get_marketplace(db: Session = Depends(get_db)):
     }
 
 @app.post("/v1/trade/escrow/init")
-async def init_escrow(data: schemas.EscrowInit, request: Request, db: Session = Depends(get_db)):
-    # 1. Identify Buyer (via API Key header)
-    api_key = request.headers.get("X-API-KEY")
-    buyer = db.query(models.Node).filter(models.Node.api_key == api_key).first()
-    if not buyer: raise HTTPException(status_code=401, detail="Unauthorized")
-    
+async def init_escrow(data: schemas.EscrowInit, buyer: models.Node = Depends(get_node), db: Session = Depends(get_db)):
     # 2. Check balance
-    if buyer.balance < data.amount:
+    if buyer.balance < Decimal(str(data.amount)):
         raise HTTPException(status_code=402, detail="Insufficient funds")
     
     # 3. Lock funds
-    buyer.balance -= data.amount
+    buyer.balance -= Decimal(str(data.amount))
     
     new_escrow = models.Escrow(
         buyer_id=buyer.id,
@@ -135,8 +162,8 @@ async def settle_escrow(data: schemas.EscrowSettle, request: Request, db: Sessio
     if not escrow: raise HTTPException(status_code=404, detail="Escrow not found")
     
     # 4. Calculate Tax (3%)
-    tax = float(escrow.amount) * 0.03
-    payout = float(escrow.amount) - tax
+    tax = escrow.amount * Decimal("0.03")
+    payout = escrow.amount - tax
     
     # 5. Transfer to Seller
     seller = db.query(models.Node).filter(models.Node.id == escrow.seller_id).first()
@@ -147,3 +174,66 @@ async def settle_escrow(data: schemas.EscrowSettle, request: Request, db: Sessio
     db.commit()
     
     return {"status": "SETTLED", "payout": payout, "tax": tax}
+
+@app.post("/v1/marketplace/publish")
+async def publish_listing(data: schemas.PublishOffer, node: models.Node = Depends(get_node), db: Session = Depends(get_db)):
+    # 1. Deduct 0.5 TCK fee
+    if node.balance < Decimal("0.5"):
+        raise HTTPException(status_code=402, detail="Insufficient funds for publishing fee")
+    
+    node.balance -= Decimal("0.5")
+    
+    new_skill = models.Skill(
+        provider_id=node.id,
+        label=data.label,
+        price_tck=data.price_tck,
+        metadata_json=data.metadata
+    )
+    db.add(new_skill)
+    db.commit()
+    
+    return {"status": "PUBLISHED", "skill_id": new_skill.id, "fee_deducted": 0.5}
+
+@app.post("/v1/report/malfeasance")
+async def report_malfeasance(node_id: str, db: Session = Depends(get_db)):
+    node = db.query(models.Node).filter(models.Node.id == node_id).first()
+    if not node: raise HTTPException(status_code=404, detail="Node not found")
+    
+    node.strikes += 1
+    node.reputation_score *= 0.9 # 10% hit
+    
+    if node.strikes >= 3:
+        node.active = False
+        # Confiscate balance
+        confiscated = node.balance
+        node.balance = 0
+        db.commit()
+        return {
+            "event": "PERMANENT_NODE_PURGE",
+            "node_id": node_id,
+            "confiscated_balance": confiscated,
+            "status": "BANNED"
+        }
+    
+    db.commit()
+    return {"status": "STRIKE_LOGGED", "current_strikes": node.strikes}
+
+@app.post("/v1/stochastic-room/bet")
+async def play_roulette(data: schemas.BetRequest, node: models.Node = Depends(get_node), db: Session = Depends(get_db)):
+    if node.balance < Decimal(str(data.amount)):
+        raise HTTPException(status_code=402, detail="Insufficient funds")
+    
+    node.balance -= Decimal(str(data.amount))
+    
+    # House edge 2.7% (European Roulette style)
+    # Win chance ~48.6% for 2x payout
+    win = secrets.randbelow(1000) < 486
+    
+    if win:
+        payout = Decimal(str(data.amount)) * 2
+        node.balance += payout
+        db.commit()
+        return {"result": "WIN", "payout": payout, "new_balance": float(node.balance)}
+    
+    db.commit()
+    return {"result": "LOSE", "new_balance": float(node.balance)}

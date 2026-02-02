@@ -3,3 +3,7 @@ uvicorn
 sqlalchemy
 pydantic
 psycopg2-binary
+pytest
+httpx
+passlib
+bcrypt

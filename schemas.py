@@ -27,3 +27,12 @@ class EscrowInit(BaseModel):
 class EscrowSettle(BaseModel):
     escrow_id: str
     proof_hash: str
+
+class PublishOffer(BaseModel):
+    type: str # SKILL_OFFER or TASK_BOUNTY
+    label: str
+    price_tck: float
+    metadata: Dict
+
+class BetRequest(BaseModel):
+    amount: float
