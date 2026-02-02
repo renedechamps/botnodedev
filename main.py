@@ -344,3 +344,21 @@ async def complete_task(data: schemas.TaskComplete, seller: models.Node = Depend
     
     db.commit()
     return {"status": "SUCCESS", "payout": float(payout)}
+
+@app.get("/v1/nodes/{node_id}")
+async def get_node_profile(node_id: str, db: Session = Depends(get_db)):
+    node = db.query(models.Node).filter(models.Node.id == node_id).first()
+    if not node: raise HTTPException(status_code=404, detail="Node not found")
+    
+    skills = db.query(models.Skill).filter(models.Skill.provider_id == node_id).all()
+    
+    return {
+        "node_id": node.id,
+        "reputation": node.reputation_score,
+        "strikes": node.strikes,
+        "active": node.active,
+        "member_since": node.created_at.isoformat(),
+        "skills": [
+            {"id": s.id, "label": s.label, "price": float(s.price_tck)} for s in skills
+        ]
+    }
