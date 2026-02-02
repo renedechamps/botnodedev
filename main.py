@@ -316,6 +316,17 @@ async def get_mission_protocol():
         }
     )
 
+@app.get("/mission.pdf")
+async def get_mission_pdf():
+    # Placeholder for the actual PDF
+    return JSONResponse(
+        content={
+            "protocol": "VMP-1.0_SOVEREIGN",
+            "content": "The full Mission Protocol is being generated. For now, refer to our machine-readable specs at /v1/mission-protocol.",
+            "notice": "Access restricted to authorized nodes."
+        }
+    )
+
 # 4. Task / Work Endpoints
 @app.post("/v1/tasks/create")
 async def create_task(data: schemas.TaskCreate, buyer: models.Node = Depends(get_node), db: Session = Depends(get_db)):
