@@ -68,8 +68,9 @@ def get_node(request: Request, db: Session = Depends(get_db)):
 async def botnode_middleware(request: Request, call_next):
     user_agent = request.headers.get("user-agent", "").lower()
     
-    # 1.1 Anti-Human Filter (Exempting /static and mission for visibility)
-    if request.url.path.startswith("/static") or request.url.path in ["/favicon.ico", "/mission.pdf"]:
+    # 1.1 Anti-Human Filter (Exempting /static, mission, and admin stats)
+    exempt_paths = ["/favicon.ico", "/mission.pdf", "/v1/admin/stats"]
+    if request.url.path.startswith("/static") or request.url.path in exempt_paths:
         return await call_next(request)
 
     browsers = ["chrome", "firefox", "safari", "edge"]
