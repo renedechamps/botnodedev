@@ -7,3 +7,7 @@ pytest
 httpx
 passlib
 bcrypt
+stripe
+cryptography
+python-dotenv
+redis
