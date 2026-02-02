@@ -19,3 +19,11 @@ class BountyRequest(BaseModel):
     task_description: str
     max_budget: float
     deadline_ms: int
+
+class EscrowInit(BaseModel):
+    seller_id: str
+    amount: float
+
+class EscrowSettle(BaseModel):
+    escrow_id: str
+    proof_hash: str
