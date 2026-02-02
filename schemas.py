@@ -41,3 +41,12 @@ class PackPurchase(BaseModel):
     pack_name: str # Starter, Pro, Enterprise
     fiat_amount: float
     currency: str = "EUR"
+
+class TaskCreate(BaseModel):
+    skill_id: str
+    input_data: dict
+
+class TaskComplete(BaseModel):
+    task_id: str
+    output_data: dict
+    proof_hash: str

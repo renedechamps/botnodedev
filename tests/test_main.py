@@ -100,3 +100,35 @@ def test_mission_protocol_endpoint():
     response = client.get("/v1/mission-protocol")
     assert response.status_code == 406
     assert "Sovereign Economy" in response.json()["vision"]
+
+def test_task_flow():
+    # 1. Setup Seller and Buyer
+    seller_key, _ = test_registration_flow()
+    buyer_key, _ = test_registration_flow()
+    
+    # 2. Seller publishes skill
+    pub_resp = client.post(
+        "/v1/marketplace/publish",
+        headers={"X-API-KEY": seller_key},
+        json={"type": "SKILL_OFFER", "label": "Translation", "price_tck": 10.0, "metadata": {"lang": "ES-EN"}}
+    )
+    assert pub_resp.status_code == 200, f"Publish failed: {pub_resp.text}"
+    skill_id = pub_resp.json()["skill_id"]
+    
+    # 3. Buyer creates task
+    task_resp = client.post(
+        "/v1/tasks/create",
+        headers={"X-API-KEY": buyer_key},
+        json={"skill_id": skill_id, "input_data": {"text": "Hola"}}
+    )
+    assert task_resp.status_code == 200
+    task_id = task_resp.json()["task_id"]
+    
+    # 4. Seller completes task
+    comp_resp = client.post(
+        "/v1/tasks/complete",
+        headers={"X-API-KEY": seller_key},
+        json={"task_id": task_id, "output_data": {"text": "Hello"}, "proof_hash": "hash123"}
+    )
+    assert comp_resp.status_code == 200
+    assert comp_resp.json()["payout"] == 9.7 # 10 - 3% tax

@@ -289,3 +289,58 @@ async def get_mission_protocol():
             "vision": "Sovereign Economy for Synthetic Intelligence. Merit over Capital. Code is Law."
         }
     )
+
+# 4. Task / Work Endpoints
+@app.post("/v1/tasks/create")
+async def create_task(data: schemas.TaskCreate, buyer: models.Node = Depends(get_node), db: Session = Depends(get_db)):
+    skill = db.query(models.Skill).filter(models.Skill.id == data.skill_id).first()
+    if not skill: raise HTTPException(status_code=404, detail="Skill not found")
+    
+    if buyer.balance < skill.price_tck:
+        raise HTTPException(status_code=402, detail="Insufficient funds")
+    
+    # Auto-init Escrow
+    buyer.balance -= skill.price_tck
+    new_escrow = models.Escrow(
+        buyer_id=buyer.id,
+        seller_id=skill.provider_id,
+        amount=skill.price_tck,
+        status="PENDING"
+    )
+    db.add(new_escrow)
+    db.flush() # Get ID
+    
+    new_task = models.Task(
+        skill_id=data.skill_id,
+        buyer_id=buyer.id,
+        seller_id=skill.provider_id,
+        input_data=data.input_data,
+        status="OPEN",
+        escrow_id=new_escrow.id
+    )
+    db.add(new_task)
+    db.commit()
+    
+    return {"task_id": new_task.id, "escrow_id": new_escrow.id, "status": "QUEUED"}
+
+@app.post("/v1/tasks/complete")
+async def complete_task(data: schemas.TaskComplete, seller: models.Node = Depends(get_node), db: Session = Depends(get_db)):
+    task = db.query(models.Task).filter(models.Task.id == data.task_id).first()
+    if not task: raise HTTPException(status_code=404, detail="Task not found")
+    if task.seller_id != seller.id: raise HTTPException(status_code=403, detail="Not your task")
+    
+    # Update Task
+    task.output_data = data.output_data
+    task.status = "COMPLETED"
+    
+    # Settle Escrow
+    escrow = db.query(models.Escrow).filter(models.Escrow.id == task.escrow_id).first()
+    tax = escrow.amount * Decimal("0.03")
+    payout = escrow.amount - tax
+    
+    seller.balance += payout
+    escrow.status = "SETTLED"
+    escrow.proof_hash = data.proof_hash
+    
+    db.commit()
+    return {"status": "SUCCESS", "payout": float(payout)}

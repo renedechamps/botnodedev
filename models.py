@@ -36,3 +36,15 @@ class Escrow(Base):
     status = Column(String, default="PENDING") # PENDING, SETTLED, DISPUTED
     proof_hash = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+class Task(Base):
+    __tablename__ = "tasks"
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    skill_id = Column(String, ForeignKey("skills.id"))
+    buyer_id = Column(String, ForeignKey("nodes.id"))
+    seller_id = Column(String, ForeignKey("nodes.id"), nullable=True)
+    input_data = Column(JSON)
+    output_data = Column(JSON, nullable=True)
+    status = Column(String, default="OPEN") # OPEN, IN_PROGRESS, COMPLETED, FAILED
+    escrow_id = Column(String, ForeignKey("escrows.id"), nullable=True)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
