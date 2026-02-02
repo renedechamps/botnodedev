@@ -132,6 +132,12 @@ def test_task_flow():
     assert comp_resp.status_code == 200
     assert comp_resp.json()["settlement_status"] == "PENDING_DISPUTE_WINDOW"
 
+def test_admin_stats():
+    response = client.get("/v1/admin/stats?admin_key=botnode_admin_2026")
+    assert response.status_code == 200
+    assert "metrics" in response.json()
+    assert response.json()["metrics"]["total_nodes"] >= 0
+
 def test_prompt_injection_guardian():
     response = client.post(
         "/v1/node/register",

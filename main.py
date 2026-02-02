@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request, HTTPException, Depends
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, func
 from sqlalchemy.orm import sessionmaker, Session
 import time
 import secrets
@@ -411,4 +411,43 @@ async def get_node_profile(node_id: str, db: Session = Depends(get_db)):
         "skills": [
             {"id": s.id, "label": s.label, "price": float(s.price_tck)} for s in skills
         ]
+    }
+
+@app.get("/v1/admin/stats")
+async def get_admin_stats(period: str = "24h", admin_key: str = "", db: Session = Depends(get_db)):
+    if admin_key != os.getenv("ADMIN_KEY", "botnode_admin_2026"):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    now = datetime.utcnow()
+    if period == "24h":
+        start_date = now - timedelta(days=1)
+    elif period == "7d":
+        start_date = now - timedelta(days=7)
+    elif period == "30d":
+        start_date = now - timedelta(days=30)
+    else:
+        start_date = datetime(2026, 1, 1) # Genesis
+
+    node_count = db.query(models.Node).filter(models.Node.created_at >= start_date).count()
+    skill_count = db.query(models.Skill).count() # Skills are persistent, but could filter if needed
+    task_count = db.query(models.Task).filter(models.Task.created_at >= start_date).count()
+    
+    # Financials
+    total_volume = db.query(func.sum(models.Escrow.amount)).filter(
+        models.Escrow.status == "SETTLED",
+        models.Escrow.created_at >= start_date
+    ).scalar() or 0
+    
+    vault_tax = float(total_volume) * 0.03
+
+    return {
+        "period": period,
+        "metrics": {
+            "total_nodes": node_count,
+            "active_skills": skill_count,
+            "tasks_processed": task_count,
+            "transaction_volume": float(total_volume),
+            "genesis_vault": vault_tax
+        },
+        "timestamp": now.isoformat()
     }
