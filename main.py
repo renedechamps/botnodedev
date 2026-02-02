@@ -1,9 +1,11 @@
 from fastapi import FastAPI, Request, HTTPException, Depends
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 import time
 import secrets
+import os
 from decimal import Decimal
 from passlib.context import CryptContext
 from . import models, schemas
@@ -19,6 +21,19 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="BotNode.io Core Engine")
+
+# Static files for landing page
+if not os.path.exists("static"):
+    os.makedirs("static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/")
+async def root():
+    return JSONResponse(content={
+        "message": "Welcome to BotNode API",
+        "landing_page": "/static/index.html",
+        "status": "SOVEREIGN"
+    })
 
 # Dependency
 # Dependency
