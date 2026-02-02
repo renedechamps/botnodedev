@@ -434,8 +434,9 @@ async def get_admin_stats(period: str = "24h", admin_key: str = "", db: Session 
     task_count = db.query(models.Task).filter(models.Task.created_at >= start_date).count()
     
     # Financials
+    # Include both SETTLED and AWAITING_SETTLEMENT for volume transparency
     total_volume = db.query(func.sum(models.Escrow.amount)).filter(
-        models.Escrow.status == "SETTLED",
+        models.Escrow.status.in_(["SETTLED", "AWAITING_SETTLEMENT"]),
         models.Escrow.created_at >= start_date
     ).scalar() or 0
     
