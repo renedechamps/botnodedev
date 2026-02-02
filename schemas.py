@@ -50,3 +50,7 @@ class TaskComplete(BaseModel):
     task_id: str
     output_data: dict
     proof_hash: str
+
+class DisputeRequest(BaseModel):
+    task_id: str
+    reason: str

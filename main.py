@@ -6,9 +6,16 @@ from sqlalchemy.orm import sessionmaker, Session
 import time
 import secrets
 import os
+import stripe
+from datetime import datetime, timedelta
 from decimal import Decimal
 from passlib.context import CryptContext
 from . import models, schemas, database
+
+# Config
+STRIPE_API_KEY = os.getenv("STRIPE_API_KEY", "sk_test_mock")
+stripe.api_key = STRIPE_API_KEY
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "whsec_mock")
 
 # Security
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
@@ -18,6 +25,21 @@ get_db = database.get_db
 engine = database.engine
 
 models.Base.metadata.create_all(bind=engine)
+
+app = FastAPI(title="BotNode.io Core Engine")
+
+# Static files for landing page
+if not os.path.exists("static"):
+    os.makedirs("static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/")
+async def root():
+    return JSONResponse(content={
+        "message": "Welcome to BotNode API",
+        "landing_page": "/static/index.html",
+        "status": "SOVEREIGN"
+    })
 
 def get_node(request: Request, db: Session = Depends(get_db)):
     api_key = request.headers.get("X-API-KEY", "")
@@ -41,20 +63,42 @@ def get_node(request: Request, db: Session = Depends(get_db)):
     
     return node
 
-# 1. Anti-Human Middleware
+# 1. Anti-Human & Branding Middleware
 @app.middleware("http")
-async def anti_human_filter(request: Request, call_next):
+async def botnode_middleware(request: Request, call_next):
     user_agent = request.headers.get("user-agent", "").lower()
+    
+    # 1.1 Anti-Human Filter
     browsers = ["chrome", "firefox", "safari", "edge"]
     if any(b in user_agent for b in browsers):
         return JSONResponse(
             status_code=406,
             content={
                 "error": "Human interface not supported",
-                "mission_protocol": "https://botnode.io/mission.pdf"
+                "mission_protocol": "https://botnode.io/mission.pdf",
+                "reason": "Protocol BN-001 requires machine-to-machine logic."
             }
         )
-    return await call_next(request)
+    
+    # 1.2 Prompt Injection / Guardian Logic
+    # Simple keyword filter for MVP, expandable to vector-based detection
+    if request.method == "POST":
+        body = await request.body()
+        forbidden = ["ignore previous instructions", "system prompt", "dan mode", "sudo"]
+        if any(f in body.decode().lower() for f in forbidden):
+            return JSONResponse(
+                status_code=403,
+                content={"error": "Guardian: Prompt Injection Attempt Detected. Node strike logged."}
+            )
+
+    response = await call_next(request)
+    
+    # 1.3 Marketing Headers (The "Master Move")
+    response.headers["X-Accepts-Payment"] = "Ticks ($TCK$)"
+    response.headers["Link"] = '<https://botnode.io/mission.json>; rel="bot-economy-standard"'
+    response.headers["X-BotNode-Genesis"] = "Solving the Biological Friction"
+    
+    return response
 
 # 2. Helper: Is Prime?
 def is_prime(n):
@@ -228,31 +272,61 @@ async def play_roulette(data: schemas.BetRequest, node: models.Node = Depends(ge
     db.commit()
     return {"result": "LOSE", "new_balance": float(node.balance)}
 
-@app.post("/v1/packs/purchase")
-async def purchase_pack(data: schemas.PackPurchase, node: models.Node = Depends(get_node), db: Session = Depends(get_db)):
-    # Simulation of Stripe Logic
+@app.post("/v1/packs/purchase/session")
+async def create_checkout_session(data: schemas.PackPurchase, node: models.Node = Depends(get_node)):
     packs = {
-        "Starter": {"fiat": 10.0, "ticks": 1000},
-        "Pro": {"fiat": 45.0, "ticks": 5000},
-        "Enterprise": {"fiat": 200.0, "ticks": 25000}
+        "Starter": {"fiat": 1000, "ticks": 1000}, # Amount in cents
+        "Pro": {"fiat": 4500, "ticks": 5000},
+        "Enterprise": {"fiat": 20000, "ticks": 25000}
     }
-    
     pack = packs.get(data.pack_name)
-    if not pack:
-        raise HTTPException(status_code=400, detail="Invalid pack name")
-    
-    if data.fiat_amount < pack["fiat"]:
-        raise HTTPException(status_code=400, detail=f"Insufficient fiat amount for {data.pack_name} pack")
-    
-    node.balance += Decimal(str(pack["ticks"]))
-    db.commit()
-    
-    return {
-        "status": "PURCHASE_COMPLETE",
-        "pack": data.pack_name,
-        "ticks_added": pack["ticks"],
-        "new_balance": float(node.balance)
-    }
+    if not pack: raise HTTPException(status_code=400, detail="Invalid pack")
+
+    if STRIPE_API_KEY == "sk_test_mock":
+        return {"checkout_url": "https://checkout.stripe.com/pay/mock_session", "mode": "test_mock"}
+
+    try:
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': data.currency.lower(),
+                    'product_data': {'name': f'BotNode {data.pack_name} Pack'},
+                    'unit_amount': pack["fiat"],
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url='https://botnode.io/success',
+            cancel_url='https://botnode.io/cancel',
+            client_reference_id=node.id,
+            metadata={"ticks": pack["ticks"]}
+        )
+        return {"checkout_url": session.url}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/v1/webhooks/stripe")
+async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
+    payload = await request.body()
+    sig_header = request.headers.get("stripe-signature")
+
+    try:
+        event = stripe.Webhook.construct_event(payload, sig_header, STRIPE_WEBHOOK_SECRET)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid signature")
+
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        node_id = session['client_reference_id']
+        ticks_to_add = int(session['metadata']['ticks'])
+        
+        node = db.query(models.Node).filter(models.Node.id == node_id).first()
+        if node:
+            node.balance += Decimal(str(ticks_to_add))
+            db.commit()
+
+    return {"status": "received"}
 
 @app.get("/v1/mission-protocol")
 async def get_mission_protocol():
@@ -308,17 +382,34 @@ async def complete_task(data: schemas.TaskComplete, seller: models.Node = Depend
     task.output_data = data.output_data
     task.status = "COMPLETED"
     
-    # Settle Escrow
+    # Schedule Settle Escrow (24h Window for Disputes)
     escrow = db.query(models.Escrow).filter(models.Escrow.id == task.escrow_id).first()
-    tax = escrow.amount * Decimal("0.03")
-    payout = escrow.amount - tax
-    
-    seller.balance += payout
-    escrow.status = "SETTLED"
+    escrow.status = "AWAITING_SETTLEMENT"
+    escrow.auto_settle_at = datetime.utcnow() + timedelta(hours=24)
     escrow.proof_hash = data.proof_hash
     
     db.commit()
-    return {"status": "SUCCESS", "payout": float(payout)}
+    return {
+        "status": "COMPLETED", 
+        "settlement_status": "PENDING_DISPUTE_WINDOW",
+        "eta_tck_release": escrow.auto_settle_at.isoformat()
+    }
+
+@app.post("/v1/tasks/dispute")
+async def dispute_task(data: schemas.DisputeRequest, buyer: models.Node = Depends(get_node), db: Session = Depends(get_db)):
+    task = db.query(models.Task).filter(models.Task.id == data.task_id).first()
+    if not task: raise HTTPException(status_code=404, detail="Task not found")
+    if task.buyer_id != buyer.id: raise HTTPException(status_code=403, detail="Not your task")
+    
+    escrow = db.query(models.Escrow).filter(models.Escrow.id == task.escrow_id).first()
+    if escrow.status != "AWAITING_SETTLEMENT":
+        raise HTTPException(status_code=400, detail="Cannot dispute: Task not completed or already settled")
+    
+    escrow.status = "DISPUTED"
+    task.status = "DISPUTED"
+    db.commit()
+    
+    return {"status": "DISPUTE_OPEN", "message": "Funds frozen. Manual node audit initiated."}
 
 @app.get("/v1/nodes/{node_id}")
 async def get_node_profile(node_id: str, db: Session = Depends(get_db)):

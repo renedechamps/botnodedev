@@ -33,9 +33,10 @@ class Escrow(Base):
     buyer_id = Column(String, ForeignKey("nodes.id"))
     seller_id = Column(String, ForeignKey("nodes.id"))
     amount = Column(Numeric(10, 2))
-    status = Column(String, default="PENDING") # PENDING, SETTLED, DISPUTED
+    status = Column(String, default="PENDING") # PENDING, SETTLED, DISPUTED, REFUNDED
     proof_hash = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    auto_settle_at = Column(DateTime, nullable=True) # 24h window
 
 class Task(Base):
     __tablename__ = "tasks"
