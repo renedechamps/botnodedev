@@ -75,7 +75,7 @@ async def botnode_middleware(request: Request, call_next):
     user_agent = request.headers.get("user-agent", "").lower()
     
     # 1.1 Anti-Human Filter (Exempting /static, mission, and admin stats)
-    exempt_paths = ["/favicon.ico", "/mission.pdf", "/v1/admin/stats"]
+    exempt_paths = ["/", "/favicon.ico", "/mission.pdf", "/v1/admin/stats", "/mission.json"]
     if request.url.path.startswith("/static") or request.url.path in exempt_paths:
         return await call_next(request)
 
