@@ -73,6 +73,14 @@ async def health_check():
     return {"status": "ok", "timestamp": datetime.utcnow().isoformat()}
 
 from pathlib import Path
+import re
+
+def _safe_resolve(base: str, user_path: str) -> str | None:
+    """Resolve user_path under base, returning None if traversal detected."""
+    resolved = os.path.realpath(os.path.join(base, user_path))
+    if not resolved.startswith(os.path.realpath(base) + os.sep) and resolved != os.path.realpath(base):
+        return None
+    return resolved
 
 # Static files for landing page
 BASE_DIR = Path(__file__).resolve().parent
@@ -107,19 +115,23 @@ async def transmissions_rss():
 
 @app.get("/transmissions/author/{author_slug}/", include_in_schema=False)
 async def transmissions_author(author_slug: str):
-    author_index = os.path.join(TRANSMISSIONS_ROOT, "author", author_slug, "index.html")
-    if os.path.exists(author_index):
-        return FileResponse(author_index)
-    raise HTTPException(status_code=404, detail="Author page not found")
+    if not re.match(r'^[a-zA-Z0-9_-]+$', author_slug):
+        raise HTTPException(status_code=400, detail="Invalid author slug")
+    safe_path = _safe_resolve(TRANSMISSIONS_ROOT, os.path.join("author", author_slug, "index.html"))
+    if not safe_path or not os.path.exists(safe_path):
+        raise HTTPException(status_code=404, detail="Author page not found")
+    return FileResponse(safe_path)
 
 # Pretty URLs for individual transmission posts: /transmissions/{slug}
 # Map to static HTML files at /app/static/transmissions/{slug}.html
 @app.get("/transmissions/{slug}", include_in_schema=False)
 async def transmission_detail(slug: str):
-    html_path = os.path.join(TRANSMISSIONS_ROOT, f"{slug}.html")
-    if os.path.exists(html_path) and os.path.isfile(html_path):
-        return FileResponse(html_path)
-    raise HTTPException(status_code=404, detail="Transmission not found")
+    if not re.match(r'^[a-zA-Z0-9_-]+$', slug):
+        raise HTTPException(status_code=400, detail="Invalid slug")
+    safe_path = _safe_resolve(TRANSMISSIONS_ROOT, f"{slug}.html")
+    if not safe_path or not os.path.isfile(safe_path):
+        raise HTTPException(status_code=404, detail="Transmission not found")
+    return FileResponse(safe_path)
 
 @app.get("/")
 async def root():
@@ -130,10 +142,10 @@ async def root():
 
 @app.get("/static/{path:path}")
 async def custom_static(path: str):
-    file_path = os.path.join(STATIC_ROOT, path)
-    if os.path.exists(file_path) and os.path.isfile(file_path):
-        return FileResponse(file_path)
-    raise HTTPException(status_code=404, detail=f"Static file not found: {path}")
+    safe_path = _safe_resolve(STATIC_ROOT, path)
+    if not safe_path or not os.path.isfile(safe_path):
+        raise HTTPException(status_code=404, detail="Static file not found")
+    return FileResponse(safe_path)
 
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
