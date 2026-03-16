@@ -1,5 +1,6 @@
 from decimal import Decimal
 from datetime import datetime, timedelta
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 import models
@@ -7,6 +8,64 @@ import models
 
 MAX_GENESIS_BADGES = 200
 GENESIS_BONUS_TCK = Decimal("300")
+
+
+def recalculate_cri(node: models.Node, db: Session) -> float:
+    """Recalculate CRI for a node based on real on-chain activity.
+
+    Factors (0-100 scale):
+    - Settled transactions as seller (weight: 30) — max at 20 tx
+    - Account age in days (weight: 15) — max at 90 days
+    - Dispute rate as seller (weight: -25) — disputes / total tasks
+    - Strike penalty (weight: -15 per strike)
+    - Genesis badge bonus (weight: +10)
+    """
+    now = datetime.utcnow()
+
+    # Settled TX count as seller
+    settled_count = db.query(models.Escrow).filter(
+        models.Escrow.seller_id == node.id,
+        models.Escrow.status == "SETTLED",
+    ).count()
+    tx_score = min(30.0, (settled_count / 20.0) * 30.0)
+
+    # Account age
+    age_days = max(0, (now - node.created_at).days) if node.created_at else 0
+    age_score = min(15.0, (age_days / 90.0) * 15.0)
+
+    # Dispute rate as seller
+    total_tasks_as_seller = db.query(models.Task).filter(
+        models.Task.seller_id == node.id,
+        models.Task.status.in_(["COMPLETED", "DISPUTED"]),
+    ).count()
+    disputed_tasks = db.query(models.Task).filter(
+        models.Task.seller_id == node.id,
+        models.Task.status == "DISPUTED",
+    ).count()
+    if total_tasks_as_seller > 0:
+        dispute_penalty = (disputed_tasks / total_tasks_as_seller) * 25.0
+    else:
+        dispute_penalty = 0.0
+
+    # Strike penalty
+    strike_penalty = node.strikes * 15.0
+
+    # Genesis bonus
+    genesis_bonus = 10.0 if node.has_genesis_badge else 0.0
+
+    # Base score starts at 50 (neutral)
+    raw = 50.0 + tx_score + age_score - dispute_penalty - strike_penalty + genesis_bonus
+    cri = max(0.0, min(100.0, round(raw, 1)))
+
+    # Apply Genesis CRI floor
+    if node.has_genesis_badge and node.first_settled_tx_at and node.strikes < 3:
+        protection_end = node.first_settled_tx_at + timedelta(days=180)
+        if now <= protection_end and cri < 1.0:
+            cri = 1.0
+
+    node.cri_score = cri
+    node.cri_updated_at = now
+    return cri
 
 
 def apply_cri_floor(node: models.Node) -> None:

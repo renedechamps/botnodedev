@@ -18,6 +18,10 @@ class Node(Base):
     active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
+    # CRI (Cryptographic Reliability Index) — persisted, recalculated by worker
+    cri_score = Column(Float, default=50.0)
+    cri_updated_at = Column(DateTime, nullable=True)
+
     # Genesis program fields
     signup_token = Column(String(64), nullable=True, index=True)
     has_genesis_badge = Column(Boolean, default=False, index=True)

@@ -18,7 +18,7 @@ from html import escape
 from passlib.context import CryptContext
 import models, schemas, database
 from auth.jwt_tokens import issue_access_token, verify_access_token
-from worker import check_and_award_genesis_badges
+from worker import check_and_award_genesis_badges, recalculate_cri
 
 # Static mapping for MCP capabilities → internal skills (v1)
 MCP_CAPABILITIES = {
@@ -496,11 +496,13 @@ async def settle_escrow(data: schemas.EscrowSettle, caller: models.Node = Depend
     # Genesis program hook: capture seller's first settled transaction
     if seller.first_settled_tx_at is None:
         seller.first_settled_tx_at = datetime.utcnow()
-        # Trigger asynchronous-style worker hook for Genesis badge evaluation
         check_and_award_genesis_badges(db)
 
+    # Recalculate seller CRI after settlement
+    recalculate_cri(seller, db)
+
     db.commit()
-    
+
     return {"status": "SETTLED", "payout": payout, "tax": tax}
 
 @app.post("/v1/marketplace/publish")
@@ -543,9 +545,10 @@ async def report_malfeasance(node_id: str, reporter: models.Node = Depends(get_c
     
     if node.strikes >= 3:
         node.active = False
-        # Confiscate balance
         confiscated = node.balance
         node.balance = 0
+        node.cri_score = 0.0
+        node.cri_updated_at = datetime.utcnow()
         db.commit()
         return {
             "event": "PERMANENT_NODE_PURGE",
@@ -553,7 +556,9 @@ async def report_malfeasance(node_id: str, reporter: models.Node = Depends(get_c
             "confiscated_balance": confiscated,
             "status": "BANNED"
         }
-    
+
+    # Recalculate CRI after strike
+    recalculate_cri(node, db)
     db.commit()
     return {"status": "STRIKE_LOGGED", "current_strikes": node.strikes}
 
@@ -908,12 +913,13 @@ async def get_node_badge_svg(node_id: str, db: Session = Depends(get_db)):
     delta = datetime.utcnow() - node.created_at
     active_days = max(0, delta.days)
 
-    # CRI (Cryptographic Reliability Index): MVP uses reputation_score scaled to 0–100
-    # and penalized by strikes. This is intentionally simple and readable.
-    base_cri = max(0.0, min(1.0, float(node.reputation_score)))
-    penalty = 0.15 * node.strikes  # -15 points per strike
-    cri_raw = base_cri * 100.0 - penalty * 100.0
-    cri = int(max(0, min(100, round(cri_raw))))
+    # CRI: use persisted score from worker, recalculate if stale (>1h) or missing
+    from worker import recalculate_cri
+    cri_val = node.cri_score
+    if cri_val is None or node.cri_updated_at is None or (datetime.utcnow() - node.cri_updated_at).total_seconds() > 3600:
+        cri_val = recalculate_cri(node, db)
+        db.commit()
+    cri = int(round(cri_val))
 
     stats = {
         "rank": rank,
