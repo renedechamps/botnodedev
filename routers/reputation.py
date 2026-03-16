@@ -12,6 +12,7 @@ from dependencies import (
     limiter, audit_log, _utcnow, get_db, get_current_node,
 )
 from worker import recalculate_cri
+from config import GENESIS_PROTECTION_WINDOW
 
 router = APIRouter(tags=["reputation"])
 
@@ -39,8 +40,7 @@ def report_malfeasance(request: Request, node_id: str, reporter: models.Node = D
     # Genesis CRI Floor Check: If Node has badge, keep CRI >= 1.0 (for 180 days)
     # UNLESS strikes >= 3 (malfeasance overrides protection)
     if node.has_genesis_badge and node.first_settled_tx_at and node.strikes < 3:
-        protection_period = timedelta(days=180)
-        if _utcnow() <= (node.first_settled_tx_at + protection_period):
+        if _utcnow() <= (node.first_settled_tx_at + GENESIS_PROTECTION_WINDOW):
             if node.reputation_score < 1.0:
                 node.reputation_score = 1.0
 

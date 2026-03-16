@@ -6,18 +6,21 @@ from datetime import datetime, timedelta
 from fastapi import APIRouter, Request, HTTPException, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+import sqlalchemy.exc
 
 import models
+import schemas
 from dependencies import (
     audit_log, logger, _utcnow, get_db, verify_admin_token, require_admin_key,
 )
 from worker import check_and_award_genesis_badges, recalculate_cri
+from config import PROTOCOL_TAX_RATE, PENDING_ESCROW_TIMEOUT
 
 router = APIRouter(tags=["admin"])
 
 
 @router.post("/api/v1/admin/sync/node")
-def admin_sync_node(node_data: dict, request: Request, db: Session = Depends(get_db)) -> dict:
+def admin_sync_node(node_data: schemas.AdminNodeSync, request: Request, db: Session = Depends(get_db)) -> dict:
     """Create or update a node from an external admin source.
 
     Auth: ``BOTNODE_ADMIN_TOKEN`` via Bearer header.
@@ -30,12 +33,14 @@ def admin_sync_node(node_data: dict, request: Request, db: Session = Depends(get
     if not verify_admin_token(admin_token):
         raise HTTPException(status_code=401, detail="Admin authentication failed")
 
+    data = node_data.model_dump(exclude_unset=True)
+
     # Check if the node already exists
-    node = db.query(models.Node).filter(models.Node.id == node_data["id"]).first()
+    node = db.query(models.Node).filter(models.Node.id == data["id"]).first()
 
     if node:
         # Update existing node
-        for key, value in node_data.items():
+        for key, value in data.items():
             if hasattr(node, key) and key != "id" and key != "created_at":
                 if key == "balance" or key == "reputation_score":
                     setattr(node, key, Decimal(str(value)))
@@ -43,7 +48,7 @@ def admin_sync_node(node_data: dict, request: Request, db: Session = Depends(get
                     setattr(node, key, value)
     else:
         # Create new node — convert JSON floats to Decimal for the DB
-        processed_data = node_data.copy()
+        processed_data = data.copy()
         if "balance" in processed_data:
             processed_data["balance"] = Decimal(str(processed_data["balance"]))
         if "reputation_score" in processed_data:
@@ -56,7 +61,7 @@ def admin_sync_node(node_data: dict, request: Request, db: Session = Depends(get
         db.add(new_node)
 
     db.commit()
-    return {"status": "success", "node_id": node_data["id"]}
+    return {"status": "success", "node_id": data["id"]}
 
 
 @router.get("/v1/admin/stats")
@@ -88,7 +93,7 @@ def get_admin_stats(period: str = "24h", _admin: bool = Depends(require_admin_ke
         models.Escrow.created_at >= start_date
     ).scalar() or 0
 
-    vault_tax = float(total_volume) * 0.03
+    vault_tax = str(Decimal(str(total_volume)) * PROTOCOL_TAX_RATE)
 
     return {
         "period": period,
@@ -96,7 +101,7 @@ def get_admin_stats(period: str = "24h", _admin: bool = Depends(require_admin_ke
             "total_nodes": node_count,
             "active_skills": skill_count,
             "tasks_processed": task_count,
-            "transaction_volume": float(total_volume),
+            "transaction_volume": str(total_volume),
             "genesis_vault": vault_tax
         },
         "timestamp": now.isoformat()
@@ -128,7 +133,7 @@ def auto_settle_escrows(_admin: bool = Depends(require_admin_key), db: Session =
                 failed += 1
                 continue
 
-            tax = escrow.amount * Decimal("0.03")
+            tax = escrow.amount * PROTOCOL_TAX_RATE
             payout = escrow.amount - tax
 
             seller.balance += payout
@@ -143,7 +148,7 @@ def auto_settle_escrows(_admin: bool = Depends(require_admin_key), db: Session =
             total_tax += tax
             # Commit per-escrow so failures don't roll back the whole batch
             db.commit()
-        except Exception as e:
+        except (sqlalchemy.exc.SQLAlchemyError, ValueError) as e:
             db.rollback()
             failed += 1
             logger.error(f"Auto-settle failed for escrow {escrow.id}: {e}")
@@ -152,7 +157,7 @@ def auto_settle_escrows(_admin: bool = Depends(require_admin_key), db: Session =
         "status": "OK",
         "settled": settled,
         "failed": failed,
-        "tax_routed_to_vault": float(total_tax),
+        "tax_routed_to_vault": str(total_tax),
         "timestamp": now.isoformat()
     }
 

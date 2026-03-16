@@ -105,7 +105,7 @@ def mcp_hire(request_body: schemas.MCPHireRequest, buyer: models.Node = Depends(
         "status": "QUEUED",
         "task_id": new_task.id,
         "escrow_id": new_escrow.id,
-        "estimated_cost": float(price_tck),
+        "estimated_cost": str(price_tck),
         "eta_seconds": capability_cfg.get("eta_seconds", 30),
     }
 
@@ -148,7 +148,7 @@ def mcp_get_task(task_id: str, caller: models.Node = Depends(get_current_node), 
     if task.escrow_id:
         escrow = db.query(models.Escrow).filter(models.Escrow.id == task.escrow_id).first()
         if escrow and escrow.status in ["AWAITING_SETTLEMENT", "SETTLED"]:
-            cost = float(escrow.amount)
+            cost = str(escrow.amount)
 
     return {
         "status": status,

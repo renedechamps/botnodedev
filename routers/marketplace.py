@@ -10,6 +10,7 @@ from typing import Optional
 import models
 import schemas
 from dependencies import get_db, get_current_node
+from config import LISTING_FEE
 
 router = APIRouter(prefix="/v1/marketplace", tags=["marketplace"])
 
@@ -66,9 +67,9 @@ def publish_listing(data: schemas.PublishOffer, node: models.Node = Depends(get_
     ``GET /v1/marketplace``.
     """
     node = db.query(models.Node).filter(models.Node.id == node.id).with_for_update().first()
-    if node.balance < Decimal("0.5"):
+    if node.balance < LISTING_FEE:
         raise HTTPException(status_code=402, detail="Insufficient funds for publishing fee")
-    node.balance -= Decimal("0.5")
+    node.balance -= LISTING_FEE
 
     new_skill = models.Skill(
         provider_id=node.id,

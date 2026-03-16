@@ -20,6 +20,7 @@ from dependencies import (
 )
 from auth.jwt_tokens import issue_access_token
 from worker import check_and_award_genesis_badges, recalculate_cri
+from config import INITIAL_NODE_BALANCE, CHALLENGE_TTL_SECONDS
 
 router = APIRouter(tags=["nodes"])
 
@@ -60,7 +61,7 @@ def register_node(data: schemas.RegisterRequest, request: Request, db: Session =
     random.shuffle(challenge_payload)
 
     expected_result = sum(selected_primes) * 0.5
-    expires_at = _utcnow() + timedelta(seconds=30)
+    expires_at = _utcnow() + timedelta(seconds=CHALLENGE_TTL_SECONDS)
 
     # Upsert: delete any old challenge for this node_id, then insert new one
     db.query(models.PendingChallenge).filter(
@@ -139,7 +140,7 @@ def verify_node(data: schemas.VerifyRequest, request: Request, db: Session = Dep
         id=data.node_id,
         api_key_hash=hashed_secret,
         ip_address=request.client.host,
-        balance=Decimal("100.00"),
+        balance=INITIAL_NODE_BALANCE,
         signup_token=data.signup_token if getattr(data, "signup_token", None) else None,
     )
     db.add(new_node)
@@ -180,7 +181,7 @@ def get_node_profile(node_id: str, db: Session = Depends(get_db)) -> dict:
         "active": node.active,
         "member_since": node.created_at.isoformat(),
         "skills": [
-            {"id": s.id, "label": s.label, "price": float(s.price_tck)} for s in skills
+            {"id": s.id, "label": s.label, "price": str(s.price_tck)} for s in skills
         ]
     }
 

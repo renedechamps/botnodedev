@@ -13,6 +13,9 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 import models
+from config import (
+    MAX_GENESIS_BADGES, GENESIS_BONUS_TCK, GENESIS_PROTECTION_WINDOW, GENESIS_CRI_FLOOR,
+)
 
 logger = logging.getLogger("botnode.worker")
 
@@ -20,10 +23,6 @@ logger = logging.getLogger("botnode.worker")
 def _utcnow():
     """Return the current UTC time as a naive datetime."""
     return datetime.now(timezone.utc).replace(tzinfo=None)
-
-
-MAX_GENESIS_BADGES = 200
-GENESIS_BONUS_TCK = Decimal("300")
 
 
 def recalculate_cri(node: models.Node, db: Session) -> float:
@@ -75,9 +74,9 @@ def recalculate_cri(node: models.Node, db: Session) -> float:
 
     # Apply Genesis CRI floor
     if node.has_genesis_badge and node.first_settled_tx_at and node.strikes < 3:
-        protection_end = node.first_settled_tx_at + timedelta(days=180)
-        if now <= protection_end and cri < 1.0:
-            cri = 1.0
+        protection_end = node.first_settled_tx_at + GENESIS_PROTECTION_WINDOW
+        if now <= protection_end and cri < GENESIS_CRI_FLOOR:
+            cri = GENESIS_CRI_FLOOR
 
     node.cri_score = cri
     node.cri_updated_at = now
@@ -96,12 +95,11 @@ def apply_cri_floor(node: models.Node) -> None:  # noqa: D401
     if not node.has_genesis_badge or not node.first_settled_tx_at:
         return
 
-    # Check if within 180 days window
-    protection_period = timedelta(days=180)
-    if _utcnow() <= (node.first_settled_tx_at + protection_period):
+    # Check if within protection window
+    if _utcnow() <= (node.first_settled_tx_at + GENESIS_PROTECTION_WINDOW):
         # Apply floor only if not banned (strikes < 3)
-        if node.strikes < 3 and node.reputation_score < 1.0:
-            node.reputation_score = 1.0
+        if node.strikes < 3 and node.reputation_score < GENESIS_CRI_FLOOR:
+            node.reputation_score = GENESIS_CRI_FLOOR
 
 
 def check_and_award_genesis_badges(db: Session) -> None:

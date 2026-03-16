@@ -108,7 +108,12 @@ Before opening a PR, verify:
   `test_mcp_and_admin`, etc.
 - All env vars are documented in `.env.example`.  If you add a new one,
   document it there and in the README table.
+- **config.py** holds all business constants (fees, timeouts, tax rates).
+  Never hardcode a `Decimal("0.03")` or `timedelta(hours=24)` in a router —
+  import from `config.py` instead.
 - Every function must have a return type hint and a docstring.
+- Never use `float()` on financial `Decimal` values — use `str()` for
+  JSON serialization.
 
 ## Reporting Issues
 

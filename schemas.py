@@ -125,3 +125,13 @@ class SkillExecuteResponse(BaseModel):
     status: str
     queue_position: Optional[int] = None
     estimated_wait: Optional[int] = None
+
+
+class AdminNodeSync(BaseModel):
+    id: str = Field(..., min_length=1, max_length=100)
+    api_key_hash: Optional[str] = None
+    balance: Optional[float] = Field(None, ge=0)
+    reputation_score: Optional[float] = Field(None, ge=0, le=10)
+    active: Optional[bool] = None
+    ip_address: Optional[str] = None
+    created_at: Optional[str] = None

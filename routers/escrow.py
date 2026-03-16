@@ -12,6 +12,7 @@ from dependencies import (
     audit_log, _utcnow, get_db, get_node, get_current_node,
 )
 from worker import check_and_award_genesis_badges, recalculate_cri
+from config import PROTOCOL_TAX_RATE, DISPUTE_WINDOW, PENDING_ESCROW_TIMEOUT
 
 router = APIRouter(tags=["escrow"])
 
@@ -37,7 +38,7 @@ def init_escrow(data: schemas.EscrowInit, buyer: models.Node = Depends(get_curre
         seller_id=data.seller_id,
         amount=data.amount,
         status="PENDING",
-        auto_refund_at=_utcnow() + timedelta(hours=72),
+        auto_refund_at=_utcnow() + PENDING_ESCROW_TIMEOUT,
     )
     db.add(new_escrow)
     db.commit()
@@ -79,7 +80,7 @@ def settle_escrow(data: schemas.EscrowSettle, caller: models.Node = Depends(get_
         )
 
     # 4. Calculate Tax (3%)
-    tax = escrow.amount * Decimal("0.03")
+    tax = escrow.amount * PROTOCOL_TAX_RATE
     payout = escrow.amount - tax
 
     # 5. Transfer to Seller
@@ -125,7 +126,7 @@ def create_task(data: schemas.TaskCreate, buyer: models.Node = Depends(get_node)
         seller_id=skill.provider_id,
         amount=skill.price_tck,
         status="PENDING",
-        auto_refund_at=_utcnow() + timedelta(hours=72),
+        auto_refund_at=_utcnow() + PENDING_ESCROW_TIMEOUT,
     )
     db.add(new_escrow)
     db.flush() # Get ID
@@ -169,7 +170,7 @@ def complete_task(data: schemas.TaskComplete, seller: models.Node = Depends(get_
     # Schedule Settle Escrow (24h Window for Disputes)
     escrow = db.query(models.Escrow).filter(models.Escrow.id == task.escrow_id).first()
     escrow.status = "AWAITING_SETTLEMENT"
-    escrow.auto_settle_at = _utcnow() + timedelta(hours=24)
+    escrow.auto_settle_at = _utcnow() + DISPUTE_WINDOW
     escrow.proof_hash = data.proof_hash
 
     db.commit()

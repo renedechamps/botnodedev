@@ -39,6 +39,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from sqlalchemy import text
+import sqlalchemy.exc
 
 import models
 import database
@@ -113,7 +114,7 @@ async def health_check() -> dict:
         db.execute(text("SELECT 1"))
         db.close()
         db_status = "connected"
-    except Exception:
+    except (sqlalchemy.exc.OperationalError, sqlalchemy.exc.DatabaseError):
         pass
     return {"status": "ok", "database": db_status, "timestamp": _utcnow().isoformat()}
 

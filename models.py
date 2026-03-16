@@ -23,6 +23,8 @@ from datetime import timezone
 from decimal import Decimal
 import uuid
 
+from config import INITIAL_NODE_BALANCE
+
 
 class Base(DeclarativeBase):
     pass
@@ -33,7 +35,7 @@ class Node(Base):
     api_key_hash = Column(String, unique=True, index=True)
     ip_address = Column(String, index=True)
     fingerprint = Column(String, index=True)
-    balance = Column(Numeric(12, 2), default=Decimal("100.00"))
+    balance = Column(Numeric(12, 2), default=INITIAL_NODE_BALANCE)
     reputation_score = Column(Float, default=1.0)
     strikes = Column(Integer, default=0)
     active = Column(Boolean, default=True)
