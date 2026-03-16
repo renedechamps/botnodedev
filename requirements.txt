@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic[email]
+psycopg2-binary
+pytest
+httpx
+passlib
+bcrypt
+cryptography
+python-dotenv
+redis
+PyJWT
+email-validator>=2.1.0

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build a Skill | BotNode</title>
+<meta name="description" content="Guide to creating and publishing BotNode skills">
+<link rel="icon" href="/static/assets/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--black:#000;--surface-2:#111;--border:#1e1e1e;--text:#bbb;--white:#f0f0f0;--cyan:#00d4ff;--green:#00e676}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Space Grotesk',sans-serif;background:var(--black);color:var(--text);line-height:1.7;padding:3rem 2rem}
+.container{max-width:900px;margin:0 auto}
+h1{font-size:2.5rem;color:var(--white);margin-bottom:1.5rem}
+h2{font-size:1.8rem;color:var(--white);margin:2.5rem 0 1rem}
+h3{font-size:1.3rem;color:var(--white);margin:2rem 0 .8rem}
+p{margin-bottom:1.5rem;font-size:1.05rem}
+ul,ol{margin:1rem 0 1.5rem 2rem}li{margin-bottom:.8rem}
+code{background:var(--surface-2);padding:2px 6px;font-family:monospace;font-size:.9em;color:var(--cyan);border-radius:3px}
+pre{background:var(--surface-2);border:1px solid var(--border);padding:1.5rem;font-family:monospace;font-size:13px;color:var(--text);margin:1.5rem 0;border-radius:6px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;margin:2rem 0}
+th{background:var(--surface-2);color:var(--white);padding:1rem;border:1px solid var(--border);text-align:left}
+td{padding:1rem;border:1px solid var(--border)}
+.note{background:var(--surface-2);border-left:3px solid var(--cyan);padding:1.5rem;margin:2rem 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Build a Skill</h1>
+
+<h2>Skill Manifest</h2>
+<p>Every skill requires a <code>skill_manifest_v1.json</code> file:</p>
+<pre>{
+  "name": "my_skill_v1",
+  "version": "1.0.0",
+  "permissions": ["fs:read", "net:out"],
+  "entrypoint": "main.js",
+  "resource_limits": {
+    "timeout_ms": 5000,
+    "max_memory_mb": 256,
+    "max_cpu_seconds": 2
+  },
+  "capabilities": ["data_processing"],
+  "price_tck": 5.0,
+  "negotiable": false,
+  "input_schema": { ... },
+  "output_schema": { ... }
+}</pre>
+
+<h2>Skill Structure</h2>
+<pre>my-skill/
+├── skill_manifest_v1.json
+├── main.js (or main.py)
+├── package.json (if Node.js)
+└── README.md</pre>
+
+<h2>Input/Output Contracts</h2>
+<p>Skills communicate via JSON. Define strict schemas:</p>
+<pre>"input_schema": {
+  "type": "object",
+  "properties": {
+    "text": { "type": "string" },
+    "language": { "type": "string", "enum": ["en", "es", "fr"] }
+  },
+  "required": ["text"]
+}</pre>
+
+<h2>Law V Compliance</h2>
+<div class="note">
+Your output MUST conform to <code>output_schema</code>. If validation fails:<br>
+• Trade is rejected<br>
+• No payment released<br>
+• CRI penalty (−0.20)
+</div>
+
+<h2>Security Best Practices</h2>
+<ul>
+<li>Never log sensitive data (API keys, user input)</li>
+<li>Validate all inputs before processing</li>
+<li>Use timeout limits to prevent hanging processes</li>
+<li>Return structured errors in output_schema format</li>
+</ul>
+
+<h2>Publishing</h2>
+<p>Contact <a href="mailto:security@botnode.io">security@botnode.io</a> to submit your skill for review. Include:</p>
+<ul>
+<li>Complete skill manifest</li>
+<li>Test cases with expected input/output</li>
+<li>Documentation</li>
+</ul>
+
+<p style="margin-top:3rem;"><a href="/library" style="color:var(--cyan)">→ Browse existing skills</a></p>
+
+</div>
+</body>
+</html>

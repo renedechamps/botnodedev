@@ -1,0 +1,314 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">/* ============================================</p>
+<p class="p1"><span class="Apple-converted-space">   </span>DOCS HUB STYLES</p>
+<p class="p1"><span class="Apple-converted-space">   </span>============================================ */</p>
+<p class="p2"><br></p>
+<p class="p1">* {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin: 0;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>padding: 0;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>box-sizing: border-box;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">body {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-family: 'JetBrains Mono', 'Courier New', monospace;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: #000;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #e0e0e0;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>line-height: 1.6;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.container {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>max-width: 1200px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin: 0 auto;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>padding: 0 20px;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">/* Hero Section */</p>
+<p class="p1">.docs-hero {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>padding: 80px 20px 60px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border-bottom: 1px solid #222;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.docs-hero h1 {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 48px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-weight: 700;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #00ff88;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin-bottom: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>letter-spacing: 2px;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.docs-hero .subtitle {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 18px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #888;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin-bottom: 24px;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.docs-hero .breadcrumb {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #666;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.docs-hero .breadcrumb a {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #00ff88;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>text-decoration: none;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.docs-hero .breadcrumb a:hover {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>text-decoration: underline;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">/* Section */</p>
+<p class="p1">.docs-section {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>padding: 80px 20px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border-bottom: 1px solid #222;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.docs-section.priority-high {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: rgba(0, 255, 136, 0.02);</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.docs-section.blueprint-section {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: rgba(255, 119, 0, 0.02);</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.section-header {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin-bottom: 48px;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.section-header h2 {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 28px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-weight: 700;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #e0e0e0;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.section-description {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #888;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin-top: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>max-width: 600px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin-left: auto;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin-right: auto;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.badge {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>display: inline-block;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>padding: 6px 16px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border-radius: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-weight: 700;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>text-transform: uppercase;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>letter-spacing: 1px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin-bottom: 16px;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.badge-critical {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: linear-gradient(135deg, #00ff88, #00ccff);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #0a0a0a;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.badge-concept {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: rgba(0, 255, 136, 0.1);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border: 1px solid #00ff88;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #00ff88;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.badge-technical {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: rgba(0, 204, 255, 0.1);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border: 1px solid #00ccff;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #00ccff;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.badge-blueprint {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: rgba(255, 119, 0, 0.1);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border: 1px solid #ff7700;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #ff7700;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.badge-security {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: rgba(255, 0, 136, 0.1);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border: 1px solid #ff0088;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #ff0088;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">/* Grid */</p>
+<p class="p1">.docs-grid {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>display: grid;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));</p>
+<p class="p1"><span class="Apple-converted-space">  </span>gap: 24px;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">/* Doc Card */</p>
+<p class="p1">.doc-card {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: rgba(10, 10, 10, 0.98);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border: 1px solid #222;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border-radius: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>padding: 32px 24px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>text-decoration: none;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #e0e0e0;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>transition: all 0.3s ease;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>gap: 12px;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.doc-card:hover {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border-color: #00ff88;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: rgba(0, 255, 136, 0.03);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>transform: translateY(-4px);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>box-shadow: 0 8px 24px rgba(0, 255, 136, 0.2);</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.blueprint-card:hover {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border-color: #ff7700;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: rgba(255, 119, 0, 0.03);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>box-shadow: 0 8px 24px rgba(255, 119, 0, 0.2);</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.doc-icon {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 32px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>line-height: 1;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.doc-card h3 {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 18px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-weight: 700;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #00ff88;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.blueprint-card h3 {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #ff7700;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.doc-card p {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #aaa;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>line-height: 1.6;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>flex-grow: 1;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.doc-meta {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #666;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>text-transform: uppercase;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>letter-spacing: 0.5px;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">/* Blueprint Meta */</p>
+<p class="p1">.blueprint-meta {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>gap: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin-top: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>padding-top: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border-top: 1px solid #222;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.blueprint-meta .stack {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #888;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-style: italic;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.blueprint-meta .cost {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 13px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #ff7700;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-weight: 600;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">/* Footer */</p>
+<p class="p1">.docs-footer {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>padding: 80px 20px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: rgba(0, 255, 136, 0.02);</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.docs-footer h2 {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 28px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-weight: 700;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #00ff88;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin-bottom: 40px;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.footer-links {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>display: grid;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));</p>
+<p class="p1"><span class="Apple-converted-space">  </span>gap: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>max-width: 900px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin: 0 auto;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.footer-link {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: rgba(10, 10, 10, 0.98);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border: 1px solid #222;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border-radius: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>padding: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>text-decoration: none;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #e0e0e0;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>gap: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>transition: all 0.3s ease;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.footer-link:hover {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border-color: #00ff88;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: rgba(0, 255, 136, 0.03);</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.footer-link .link-icon {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 24px;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.footer-link span:nth-child(2) {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-weight: 700;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #00ff88;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.footer-link .link-desc {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 13px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #888;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">/* Responsive */</p>
+<p class="p1">@media (max-width: 768px) {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.docs-hero h1 {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 32px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.docs-hero .subtitle {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.docs-section {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 60px 16px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.section-header h2 {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 22px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.section-description {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.docs-grid {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>grid-template-columns: 1fr;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1">}</p>
+</body>
+</html>

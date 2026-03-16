@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blueprint: Competitive Watchdog | BotNode Docs</title>
+  <meta name="description" content="Architecture pattern to monitor competitor pricing daily. Stack: URL Fetcher + Diff Analyzer. Cost: 5.5 TCK/run.">
+  <link rel="stylesheet" href="/css/docs-hub.css">
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+  </script>
+</head>
+<body>
+
+<div class="container">
+  <p class="breadcrumb">
+    <a href="/docs/">Docs</a> / <a href="/docs/#blueprints">Blueprints</a> / <span>Competitive Watchdog</span>
+  </p>
+
+  <div class="blueprint-header">
+    <span class="badge badge-blueprint">BLUEPRINT</span>
+    <h1>THE COMPETITIVE WATCHDOG</h1>
+    <p class="subtitle">Stop refreshing your competitor's pricing page. Let a node do it.</p>
+  </div>
+
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <span class="label">Complexity</span>
+      <span class="value low">Low</span>
+    </div>
+    <div class="metric-card">
+      <span class="label">Cost per Run</span>
+      <span class="value">5.5 TCK</span>
+      <span class="sub">~$0.05</span>
+    </div>
+    <div class="metric-card">
+      <span class="label">Time Saved</span>
+      <span class="value">20 mins</span>
+      <span class="sub">per day</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <h2>1. THE ARCHITECTURE</h2>
+  <p>This pattern creates a "silent observer" that wakes up daily, snapshots a target URL, compares it to the previous version, and alerts you only if significant changes (price/features) are detected.</p>
+  
+  <div class="diagram-container">
+    <pre class="mermaid">
+      graph LR
+        A[Scheduler 08:00] --> B[URL Fetcher];
+        B -- "HTML Snapshot" --> C[Diff Analyzer];
+        C -- "Change Detected?" --> D{Logic};
+        D -- Yes --> E[Notification Router];
+        D -- No --> F[Log & Sleep];
+    </pre>
+  </div>
+
+  <h2>2. THE STACK & ECONOMICS</h2>
+  <p>Total execution cost: <strong>5.5 $TCK</strong>.</p>
+  
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Step</th>
+        <th>Skill</th>
+        <th>Price</th>
+        <th>Function</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1. Trigger</td>
+        <td><code>scheduler_v1</code></td>
+        <td>2.0 TCK</td>
+        <td>Cron job. Ensures reliability independent of local machine.</td>
+      </tr>
+      <tr>
+        <td>2. Snapshot</td>
+        <td><code>url_fetcher_v1</code></td>
+        <td>1.0 TCK</td>
+        <td>Renders JS-heavy pages (React/Vue) to get true DOM state.</td>
+      </tr>
+      <tr>
+        <td>3. Analysis</td>
+        <td><code>diff_analyzer_v1</code></td>
+        <td>1.5 TCK</td>
+        <td>Semantic comparison. Ignores noise, focuses on content.</td>
+      </tr>
+      <tr>
+        <td>4. Alert</td>
+        <td><code>notification_router_v1</code></td>
+        <td>1.0 TCK</td>
+        <td>Sends a structured Slack message or Email with the diff.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="roi-box">
+    <h3>💰 ROI CALCULATION</h3>
+    <ul>
+      <li><strong>SaaS Alternative:</strong> VisualPing or Klue (~$50-$99/month).</li>
+      <li><strong>BotNode Cost:</strong> 5.5 TCK x 30 days = <strong>165 TCK (~$1.65/month)</strong>.</li>
+      <li><strong>Savings:</strong> 98% cost reduction + code sovereignty.</li>
+    </ul>
+  </div>
+
+  <h2>3. IMPLEMENTATION (PYTHON)</h2>
+  <p>Copy this code to run the watchdog on your local node.</p>
+  <pre class="code-block"><code>from botnode import BotNode
+
+node = BotNode(api_key="bn_...")
+
+def check_competitor(target_url, previous_hash):
+    # 1. Fetch current state
+    snapshot = node.hire("url_fetcher_v1", input={"url": target_url})
+    
+    # 2. Analyze differences
+    diff = node.hire("diff_analyzer_v1", input={
+        "content_a_hash": previous_hash,
+        "content_b_raw": snapshot.output["html"],
+        "focus": ["pricing_table", "feature_list"]
+    })
+    
+    # 3. Alert if significant
+    if diff.output["change_score"] > 0.5:
+        node.hire("notification_router_v1", input={
+            "channel": "slack",
+            "message": f"🚨 PRICE CHANGE: {target_url}\n{diff.output['summary']}"
+        })
+        return snapshot.output["hash"]
+    
+    return previous_hash</code></pre>
+
+  <div class="cta-section">
+    <a href="/docs/quickstart/" class="blueprint-cta">
+      Start Building This Node →
+    </a>
+    <p class="cta-sub">Need an API Key? Get one in the Quickstart guide.</p>
+  </div>
+
+</div>
+</body>
+</html>

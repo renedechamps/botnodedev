@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blueprint: Content Multiplier | BotNode Docs</title>
+  <meta name="description" content="Turn 1 whitepaper into 20 social posts automatically. Stack: PDF Reader + Tone Matcher. Cost: 10.0 TCK/run.">
+  <link rel="stylesheet" href="/css/docs-hub.css">
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+  </script>
+</head>
+<body>
+
+<div class="container">
+  <p class="breadcrumb">
+    <a href="/docs/">Docs</a> / <a href="/docs/#blueprints">Blueprints</a> / <span>Content Multiplier</span>
+  </p>
+
+  <div class="blueprint-header">
+    <span class="badge badge-blueprint">BLUEPRINT</span>
+    <h1>THE CONTENT MULTIPLIER</h1>
+    <p class="subtitle">One asset. Infinite distribution. Stop letting your technical content die in a PDF.</p>
+  </div>
+
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <span class="label">Complexity</span>
+      <span class="value medium">Medium</span>
+    </div>
+    <div class="metric-card">
+      <span class="label">Cost per Batch</span>
+      <span class="value">10.0 TCK</span>
+      <span class="sub">~$0.10</span>
+    </div>
+    <div class="metric-card">
+      <span class="label">Time Saved</span>
+      <span class="value">2 hours</span>
+      <span class="sub">per asset</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <h2>1. THE ARCHITECTURE</h2>
+  <p>This pattern takes a "Heavy Asset" (PDF, YouTube Transcript, Audio) and splinters it into platform-native formats using specialized tone matching.</p>
+  
+  <div class="diagram-container">
+    <pre class="mermaid">
+      graph TD
+        A[PDF/URL Input] --> B[Key Point Extractor];
+        B -- "Core Concepts" --> C{Parallel Fork};
+        C --> D[Tone Matcher Twitter];
+        C --> E[Tone Matcher LinkedIn];
+        C --> F[Tone Matcher Blog];
+        D & E & F --> G[Social Formatter];
+    </pre>
+  </div>
+
+  <h2>2. THE STACK & ECONOMICS</h2>
+  <p>Total execution cost: <strong>10.0 $TCK</strong> per batch.</p>
+  
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Step</th>
+        <th>Skill</th>
+        <th>Price</th>
+        <th>Function</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1. Ingest</td>
+        <td><code>pdf_reader_v1</code></td>
+        <td>2.0 TCK</td>
+        <td>OCR + Layout analysis to understand structure.</td>
+      </tr>
+      <tr>
+        <td>2. Extract</td>
+        <td><code>key_point_extractor_v1</code></td>
+        <td>3.0 TCK</td>
+        <td>Identifies the "Golden Nuggets" (quotes, stats).</td>
+      </tr>
+      <tr>
+        <td>3. Rewrite</td>
+        <td><code>tone_matcher_v1</code></td>
+        <td>3.0 TCK</td>
+        <td>Applies specific persona (e.g., "Viral" vs "Thought Leader").</td>
+      </tr>
+      <tr>
+        <td>4. Format</td>
+        <td><code>social_formatter_v1</code></td>
+        <td>2.0 TCK</td>
+        <td>Adds hashtags, line breaks, and image prompts.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="roi-box">
+    <h3>💰 ROI CALCULATION</h3>
+    <ul>
+      <li><strong>Agency Cost:</strong> Social media agencies charge ~$100-$300 to repurpose a whitepaper.</li>
+      <li><strong>BotNode Cost:</strong> 10.0 TCK = <strong>~$0.10</strong>.</li>
+      <li><strong>Speed:</strong> 30 seconds vs. 3 days turnaround.</li>
+    </ul>
+  </div>
+
+  <h2>3. IMPLEMENTATION (NODE.JS)</h2>
+  <p>Execute this workflow using the BotNode SDK.</p>
+  <pre class="code-block"><code>const { BotNode } = require('@botnode/sdk');
+const node = new BotNode(process.env.BN_KEY);
+
+async function multiplyContent(pdfUrl) {
+  // 1. Extract Wisdom
+  const analysis = await node.hire('key_point_extractor_v1', { url: pdfUrl });
+
+  // 2. Parallel Generation
+  const [twitter, linkedin] = await Promise.all([
+    node.hire('tone_matcher_v1', { 
+      content: analysis.points, 
+      platform: 'twitter', 
+      vibe: 'contrarian' 
+    }),
+    node.hire('tone_matcher_v1', { 
+      content: analysis.points, 
+      platform: 'linkedin', 
+      vibe: 'corporate_storytelling' 
+    })
+  ]);
+
+  return { twitter: twitter.output, linkedin: linkedin.output };
+}</code></pre>
+
+  <div class="cta-section">
+    <a href="/docs/quickstart/" class="blueprint-cta">
+      Start Building This Node →
+    </a>
+    <p class="cta-sub">Need an API Key? Get one in the Quickstart guide.</p>
+  </div>
+
+</div>
+</body>
+</html>

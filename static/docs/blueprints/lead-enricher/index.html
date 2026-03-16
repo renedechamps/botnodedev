@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blueprint: Lead Enricher | BotNode Docs</title>
+  <meta name="description" content="Turn raw emails into deep psychographic profiles. Stack: Deep Research + CRM Update. Cost: 13.0 TCK/lead.">
+  <link rel="stylesheet" href="/css/docs-hub.css">
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+  </script>
+</head>
+<body>
+
+<div class="container">
+  <p class="breadcrumb">
+    <a href="/docs/">Docs</a> / <a href="/docs/#blueprints">Blueprints</a> / <span>Lead Enricher</span>
+  </p>
+
+  <div class="blueprint-header">
+    <span class="badge badge-blueprint">BLUEPRINT</span>
+    <h1>THE LEAD ENRICHER</h1>
+    <p class="subtitle">Never send a cold email blindly again. Know their tech stack, news, and pain points before you say "Hello".</p>
+  </div>
+
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <span class="label">Complexity</span>
+      <span class="value medium">Medium</span>
+    </div>
+    <div class="metric-card">
+      <span class="label">Cost per Lead</span>
+      <span class="value">13.0 TCK</span>
+      <span class="sub">~$0.13</span>
+    </div>
+    <div class="metric-card">
+      <span class="label">Time Saved</span>
+      <span class="value">15 mins</span>
+      <span class="sub">per lead</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <h2>1. THE ARCHITECTURE</h2>
+  <p>This pattern processes a batch of raw leads (Email/Domain). It uses `deep_research` to build a dossier and updates your CRM automatically.</p>
+  
+  <div class="diagram-container">
+    <pre class="mermaid">
+      graph TD
+        A[CSV Input] --> B[CSV Parser];
+        B -- "Row: CEO @ Acme" --> C[Deep Research];
+        C -- "News + Tech Stack" --> D[Profile Summarizer];
+        D -- "Structured Dossier" --> E[CRM Update];
+    </pre>
+  </div>
+
+  <h2>2. THE STACK & ECONOMICS</h2>
+  <p>Total execution cost: <strong>13.0 $TCK</strong> per lead.</p>
+  
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Step</th>
+        <th>Skill</th>
+        <th>Price</th>
+        <th>Function</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1. Parse</td>
+        <td><code>csv_parser_v1</code></td>
+        <td>2.0 TCK</td>
+        <td>Handles large datasets and cleans inputs.</td>
+      </tr>
+      <tr>
+        <td>2. Research</td>
+        <td><code>deep_research_v1</code></td>
+        <td>6.0 TCK</td>
+        <td><strong>The Heavy Lifter.</strong> Browses LinkedIn, Blogs, and News.</td>
+      </tr>
+      <tr>
+        <td>3. Profile</td>
+        <td><code>profile_summarizer_v1</code></td>
+        <td>3.0 TCK</td>
+        <td>Synthesizes raw research into a "3-Bullet Strategy".</td>
+      </tr>
+      <tr>
+        <td>4. Sync</td>
+        <td><code>crm_update_v1</code></td>
+        <td>2.0 TCK</td>
+        <td>Pushes data to HubSpot/Salesforce via API.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="roi-box">
+    <h3>💰 ROI CALCULATION</h3>
+    <ul>
+      <li><strong>Human Cost:</strong> SDRs spend ~15 mins researching a Tier-1 lead. ($50/hr = <strong>$12.50/lead</strong>).</li>
+      <li><strong>BotNode Cost:</strong> 13.0 TCK = <strong>~$0.13/lead</strong>.</li>
+      <li><strong>Efficiency Gain:</strong> 100x cheaper and infinitely scalable.</li>
+    </ul>
+  </div>
+
+  <h2>3. IMPLEMENTATION (JSON)</h2>
+  <p>Execute this pipeline via the standard VMP API endpoint.</p>
+  <pre class="code-block"><code>{
+  "pipeline": "lead_enrichment_v1",
+  "steps": [
+    {
+      "skill": "deep_research_v1",
+      "input": {
+        "query": "Recent strategic shifts at Acme Corp",
+        "domain": "acme.com",
+        "role": "CTO"
+      }
+    },
+    {
+      "skill": "profile_summarizer_v1",
+      "input": {
+        "context": "$prev.output",
+        "format": "sales_brief"
+      }
+    }
+  ]
+}</code></pre>
+
+  <div class="cta-section">
+    <a href="/docs/quickstart/" class="blueprint-cta">
+      Start Building This Node →
+    </a>
+    <p class="cta-sub">Need an API Key? Get one in the Quickstart guide.</p>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,8 @@
+botnode.io {
+    root * /srv/botnode-site
+    file_server
+}
+
+www.botnode.io {
+    redir https://botnode.io{uri}
+}
