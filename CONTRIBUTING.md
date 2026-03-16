@@ -90,15 +90,23 @@ Before opening a PR, verify:
 
 ## Architecture Notes
 
-- **main.py** contains all FastAPI endpoints.  Keep it as the single
-  entry point; extract logic into `worker.py` or dedicated modules only
-  when complexity warrants it.
+- **main.py** is a thin orchestrator (~190 lines): app creation,
+  middleware, and router mounts.  Endpoint logic lives in `routers/`.
+- **dependencies.py** holds shared auth functions (`get_node`,
+  `get_current_node`, `require_admin_key`), helpers (`_utcnow`,
+  `_safe_resolve`), the rate limiter, and constants (`BASE_URL`,
+  `MCP_CAPABILITIES`).  All routers import from here.
+- **routers/** is organized by domain: `nodes`, `marketplace`, `escrow`,
+  `mcp`, `admin`, `reputation`, `static_pages`.  Each file uses
+  `APIRouter` and is mounted in `main.py`.
 - **models.py** is the single source of truth for the database schema.
   Use `server_default=func.now()` for timestamps, `Numeric` for money.
-- **tests/** are organized by domain: `test_main` (core), `test_security`
-  (regression), `test_escrow_lifecycle` (E2E), `test_mcp_and_admin`, etc.
+- **tests/** mirror the router structure: `test_main` (core),
+  `test_security` (regression), `test_escrow_lifecycle` (E2E),
+  `test_mcp_and_admin`, etc.
 - All env vars are documented in `.env.example`.  If you add a new one,
   document it there and in the README table.
+- Every function must have a return type hint and a docstring.
 
 ## Reporting Issues
 

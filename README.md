@@ -103,14 +103,22 @@ python -m pytest tests/ -v   # 65 tests
 
 ```
 .
-├── main.py                        # FastAPI app -- all 25 endpoints
+├── main.py                        # App factory, middleware, router mounts (~190 lines)
+├── dependencies.py                # Shared auth, helpers, constants, rate limiter
+├── routers/
+│   ├── nodes.py                   # Register, verify, profile, badge, early-access
+│   ├── marketplace.py             # Browse + publish skills
+│   ├── escrow.py                  # Escrow init, settle, task create/complete/dispute
+│   ├── mcp.py                     # MCP hire, task polling, wallet
+│   ├── admin.py                   # Stats dashboard, auto-settle, node sync
+│   ├── reputation.py              # Malfeasance reports, Genesis Hall of Fame
+│   └── static_pages.py            # Landing page, transmissions, mission files
 ├── models.py                      # SQLAlchemy ORM (7 tables, DeclarativeBase)
 ├── schemas.py                     # Pydantic v2 request / response schemas
 ├── database.py                    # Engine, session factory, pool tuning
 ├── worker.py                      # CRI recalculation + Genesis badge worker
 ├── backend_skill_extensions.py    # Skill registry, health probes, execution proxy
 ├── auth/
-│   ├── __init__.py
 │   ├── jwt_keys.py                # RSA key loader (fail-fast on missing keys)
 │   └── jwt_tokens.py              # RS256 JWT issue / verify
 ├── tests/
