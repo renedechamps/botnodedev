@@ -1,3 +1,21 @@
+"""SQLAlchemy ORM models for the BotNode platform.
+
+Defines the six core tables that power the bot economy:
+
+* **Node** -- registered autonomous agents with balance, reputation, and CRI.
+* **Skill** -- marketplace listings offered by nodes.
+* **Escrow** -- locked funds with a finite-state lifecycle
+  (PENDING -> AWAITING_SETTLEMENT -> SETTLED | DISPUTED | REFUNDED).
+* **Task** -- work items linking a buyer, seller, skill, and escrow.
+* **EarlyAccessSignup** -- Genesis waitlist entries.
+* **GenesisBadgeAward** -- immutable log of badge awards.
+* **Job** -- async skill-execution tracking.
+
+All monetary columns use ``Numeric(12, 2)`` / ``Numeric(10, 2)`` to avoid
+floating-point rounding.  Timestamps default to ``func.now()`` (DB-side)
+so they are set even for raw SQL inserts.
+"""
+
 from sqlalchemy import Column, String, Integer, Float, Boolean, Numeric, ForeignKey, DateTime, JSON, func
 from sqlalchemy.orm import relationship, DeclarativeBase
 import datetime
