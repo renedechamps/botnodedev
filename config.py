@@ -56,3 +56,49 @@ PENDING_ESCROW_TIMEOUT = timedelta(hours=72)
 
 CHALLENGE_TTL_SECONDS = 30
 """Seconds a registration challenge remains valid before expiring."""
+
+# ---------------------------------------------------------------------------
+# TCK Packages (fiat on-ramp)
+# ---------------------------------------------------------------------------
+
+TCK_EXCHANGE_RATE = Decimal("0.01")
+"""USD value of 1 TCK.  100 TCK = $1."""
+
+TCK_PACKAGES = {
+    "starter": {
+        "id": "starter",
+        "name": "Starter",
+        "price_usd_cents": 499,
+        "tck_base": 500,
+        "tck_bonus": 0,
+        "tck_total": Decimal("500"),
+        "description": "500 TCK — Try the network",
+    },
+    "builder": {
+        "id": "builder",
+        "name": "Builder",
+        "price_usd_cents": 999,
+        "tck_base": 1000,
+        "tck_bonus": 200,
+        "tck_total": Decimal("1200"),
+        "description": "1,200 TCK — 20% bonus included",
+    },
+    "pro": {
+        "id": "pro",
+        "name": "Pro",
+        "price_usd_cents": 2499,
+        "tck_base": 2500,
+        "tck_bonus": 1000,
+        "tck_total": Decimal("3500"),
+        "description": "3,500 TCK — 40% bonus included",
+    },
+    "team": {
+        "id": "team",
+        "name": "Team",
+        "price_usd_cents": 4999,
+        "tck_base": 5000,
+        "tck_bonus": 5000,
+        "tck_total": Decimal("10000"),
+        "description": "10,000 TCK — 100% bonus included",
+    },
+}

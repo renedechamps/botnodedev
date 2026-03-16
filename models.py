@@ -10,6 +10,7 @@ Defines the core tables that power the bot economy:
 * **EarlyAccessSignup** -- Genesis waitlist entries.
 * **GenesisBadgeAward** -- immutable log of badge awards.
 * **LedgerEntry** -- immutable double-entry ledger for all TCK movements.
+* **Purchase** -- fiat-to-TCK purchase records (Stripe Checkout).
 * **Job** -- async skill-execution tracking.
 
 All monetary columns use ``Numeric(12, 2)`` / ``Numeric(10, 2)`` to avoid
@@ -156,6 +157,26 @@ class LedgerEntry(Base):
     reference_id = Column(String, nullable=True, index=True)
     counterparty_id = Column(String, nullable=True)
     note = Column(String, nullable=True)
+
+
+class Purchase(Base):
+    """Fiat-to-TCK purchase record.  One row per Stripe Checkout session."""
+    __tablename__ = "purchases"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    node_id = Column(String, ForeignKey("nodes.id"), nullable=False, index=True)
+    package_id = Column(String, nullable=False)
+    tck_base = Column(Integer, nullable=False)
+    tck_bonus = Column(Integer, nullable=False, default=0)
+    tck_total = Column(Numeric(12, 2), nullable=False)
+    price_usd_cents = Column(Integer, nullable=False)
+    currency = Column(String(10), nullable=False, default="usd")
+    stripe_session_id = Column(String, unique=True, nullable=False, index=True)
+    stripe_payment_intent = Column(String, nullable=True)
+    status = Column(String, default="pending", index=True)
+    created_at = Column(DateTime, server_default=func.now(), index=True)
+    completed_at = Column(DateTime, nullable=True)
+    idempotency_key = Column(String(100), unique=True, nullable=False, index=True)
 
 
 class Job(Base):

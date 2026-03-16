@@ -137,3 +137,16 @@ class AdminNodeSync(BaseModel):
     active: Optional[bool] = None
     ip_address: Optional[str] = None
     created_at: Optional[str] = None
+
+
+class CheckoutRequest(BaseModel):
+    """Request to create a Stripe Checkout session for TCK purchase."""
+    package_id: str = Field(..., pattern=r'^(starter|builder|pro|team)$')
+    node_id: str = Field(..., min_length=3, max_length=100)
+
+
+class CheckoutResponse(BaseModel):
+    checkout_url: str
+    session_id: str
+    package: str
+    tck_total: int

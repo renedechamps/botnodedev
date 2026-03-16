@@ -208,3 +208,9 @@ app.include_router(mcp.router)
 app.include_router(admin.router)
 app.include_router(reputation.router)
 app.include_router(static_pages.router)
+
+# v1.1 — Wallet / Stripe fiat on-ramp (hidden until fiscal setup complete)
+if os.getenv("ENABLE_WALLET", "false").lower() == "true":
+    from routers import wallet
+    app.include_router(wallet.router)
+    logger.info("Wallet endpoints enabled (ENABLE_WALLET=true)")
