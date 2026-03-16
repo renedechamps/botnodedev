@@ -161,6 +161,41 @@ def create_task(data: schemas.TaskCreate, buyer: models.Node = Depends(get_node)
     return {"task_id": new_task.id, "escrow_id": new_escrow.id, "status": "QUEUED"}
 
 
+@router.get("/v1/tasks/mine")
+def get_my_tasks(
+    status: str = "OPEN",
+    seller: models.Node = Depends(get_node),
+    db: Session = Depends(get_db),
+) -> dict:
+    """List tasks assigned to the authenticated seller, filtered by status.
+
+    Auth: API key.  Sellers poll this endpoint to discover work to do.
+    Third-party seller agents use this in a loop: poll → execute → complete.
+    The internal Task Runner also uses this for house skills.
+    """
+    tasks = db.query(models.Task).filter(
+        models.Task.seller_id == seller.id,
+        models.Task.status == status,
+    ).order_by(models.Task.created_at.asc()).all()
+
+    return {
+        "node_id": seller.id,
+        "status_filter": status,
+        "tasks": [
+            {
+                "task_id": t.id,
+                "skill_id": t.skill_id,
+                "buyer_id": t.buyer_id,
+                "input_data": t.input_data,
+                "escrow_id": t.escrow_id,
+                "created_at": t.created_at.isoformat() if t.created_at else None,
+            }
+            for t in tasks
+        ],
+        "count": len(tasks),
+    }
+
+
 @router.post("/v1/tasks/complete")
 def complete_task(data: schemas.TaskComplete, seller: models.Node = Depends(get_node), db: Session = Depends(get_db)) -> dict:
     """Mark a task as completed and open the 24-hour dispute window.
