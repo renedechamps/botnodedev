@@ -1042,34 +1042,40 @@ async def auto_settle_escrows(admin_key: str = "", db: Session = Depends(get_db)
     ).all()
 
     settled = 0
+    failed = 0
     total_tax = Decimal("0.0")
 
     for escrow in escrows:
-        seller = db.query(models.Node).filter(models.Node.id == escrow.seller_id).first()
-        if not seller:
-            # Inconsistent state; skip but do not crash the batch
-            continue
+        try:
+            seller = db.query(models.Node).filter(models.Node.id == escrow.seller_id).first()
+            if not seller:
+                failed += 1
+                continue
 
-        tax = escrow.amount * Decimal("0.03")
-        payout = escrow.amount - tax
+            tax = escrow.amount * Decimal("0.03")
+            payout = escrow.amount - tax
 
-        seller.balance += payout
-        escrow.status = "SETTLED"
+            seller.balance += payout
+            escrow.status = "SETTLED"
 
-        # Genesis program hook: capture seller's first settled transaction
-        if seller.first_settled_tx_at is None:
-            seller.first_settled_tx_at = datetime.utcnow()
-            # Trigger worker hook for Genesis badge evaluation
-            check_and_award_genesis_badges(db)
+            if seller.first_settled_tx_at is None:
+                seller.first_settled_tx_at = datetime.utcnow()
+                check_and_award_genesis_badges(db)
 
-        settled += 1
-        total_tax += tax
-
-    db.commit()
+            recalculate_cri(seller, db)
+            settled += 1
+            total_tax += tax
+            # Commit per-escrow so failures don't roll back the whole batch
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            failed += 1
+            print(f"Auto-settle failed for escrow {escrow.id}: {e}")
 
     return {
         "status": "OK",
         "settled": settled,
+        "failed": failed,
         "tax_routed_to_vault": float(total_tax),
         "timestamp": now.isoformat()
     }

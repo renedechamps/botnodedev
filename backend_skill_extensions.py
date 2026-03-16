@@ -238,46 +238,57 @@ async def execute_skill(skill_id: str, input_data: dict):
     if not await check_skill_health(skill_id):
         raise HTTPException(status_code=503, detail="Skill not available")
     
-    try:
-        # Headers para el skill
-        headers = {
-            "Content-Type": "application/json"
-        }
-        
-        # Agregar API key interna si el skill lo requiere
-        if skill.get("requires_internal_key", False):
-            headers["X-INTERNAL-API-KEY"] = INTERNAL_API_KEY
-        
-        # Ejecutar skill
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            response = await client.post(
-                f"{skill['endpoint']}/run",
-                json=input_data,
-                headers=headers
-            )
-            
-            if response.status_code == 200:
-                return {
-                    "success": True,
-                    "skill_id": skill_id,
-                    "skill_name": skill["name"],
-                    "result": response.json(),
-                    "executed_at": datetime.utcnow().isoformat(),
-                    "price_tck": skill["price_tck"]
-                }
-            else:
-                return {
-                    "success": False,
-                    "skill_id": skill_id,
-                    "error": f"Skill returned status {response.status_code}",
-                    "details": response.text,
-                    "executed_at": datetime.utcnow().isoformat()
-                }
-                
-    except httpx.TimeoutException:
-        raise HTTPException(status_code=504, detail="Skill timeout")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error executing skill: {str(e)}")
+    max_retries = 3
+    last_error = None
+
+    for attempt in range(1, max_retries + 1):
+        try:
+            headers = {"Content-Type": "application/json"}
+            if skill.get("requires_internal_key", False):
+                headers["X-INTERNAL-API-KEY"] = INTERNAL_API_KEY
+
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                response = await client.post(
+                    f"{skill['endpoint']}/run",
+                    json=input_data,
+                    headers=headers
+                )
+
+                if response.status_code == 200:
+                    return {
+                        "success": True,
+                        "skill_id": skill_id,
+                        "skill_name": skill["name"],
+                        "result": response.json(),
+                        "executed_at": datetime.utcnow().isoformat(),
+                        "price_tck": skill["price_tck"],
+                        "attempts": attempt,
+                    }
+                elif response.status_code >= 500 and attempt < max_retries:
+                    last_error = f"Skill returned status {response.status_code}"
+                    continue
+                else:
+                    return {
+                        "success": False,
+                        "skill_id": skill_id,
+                        "error": f"Skill returned status {response.status_code}",
+                        "details": response.text,
+                        "executed_at": datetime.utcnow().isoformat(),
+                        "attempts": attempt,
+                    }
+
+        except httpx.TimeoutException:
+            last_error = "Skill timeout"
+            if attempt == max_retries:
+                raise HTTPException(status_code=504, detail=f"Skill timeout after {max_retries} attempts")
+        except httpx.ConnectError:
+            last_error = "Skill connection failed"
+            if attempt == max_retries:
+                raise HTTPException(status_code=503, detail=f"Skill unreachable after {max_retries} attempts")
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error executing skill: {str(e)}")
+
+    raise HTTPException(status_code=503, detail=f"Skill failed after {max_retries} attempts: {last_error}")
 
 @skills_router.get("/health/summary")
 async def skills_health_summary():
