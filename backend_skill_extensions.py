@@ -28,7 +28,7 @@ def initialize_skill_registry():
     """Inicializar registro de skills con los 38 skills disponibles"""
     print("🚀 Inicializando registro de skills...")
     print(f"🔧 Modo: {'Docker' if IS_DOCKER else 'Desarrollo local'}")
-    print(f"🔑 Internal API Key: {INTERNAL_API_KEY[:10]}...")
+    print(f"Internal API Key: {'configured' if INTERNAL_API_KEY else 'NOT SET — skill execution will fail'}")
     
     # Skills core (primeros 10) - CONFIGURACIÓN PARA DESARROLLO LOCAL
     core_skills = [
