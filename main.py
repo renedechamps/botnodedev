@@ -2,8 +2,9 @@ import os
 import logging
 from dotenv import load_dotenv
 
-# Load global environment variables BEFORE other imports
-load_dotenv("/home/ubuntu/.openclaw/.env")
+# Load environment variables — project .env first, fallback to legacy path
+load_dotenv()
+load_dotenv("/home/ubuntu/.openclaw/.env", override=False)
 
 # Structured logging
 logging.basicConfig(

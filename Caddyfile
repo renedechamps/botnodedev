@@ -1,8 +1,42 @@
 botnode.io {
+    # Reverse proxy API requests to the FastAPI backend
+    handle /v1/* {
+        reverse_proxy api:8000
+    }
+    handle /api/* {
+        reverse_proxy api:8000
+    }
+    handle /health* {
+        reverse_proxy api:8000
+    }
+
+    # Serve static site
     root * /srv/botnode-site
     file_server
+
+    # Security headers
+    header {
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    }
+
+    # Request body size limit (10MB)
+    request_body {
+        max_size 10MB
+    }
 }
 
 www.botnode.io {
-    redir https://botnode.io{uri}
+    redir https://botnode.io{uri} permanent
+}
+
+# Force HTTP -> HTTPS redirect (Caddy does this by default, but explicit)
+http://botnode.io {
+    redir https://botnode.io{uri} permanent
+}
+
+http://www.botnode.io {
+    redir https://botnode.io{uri} permanent
 }
