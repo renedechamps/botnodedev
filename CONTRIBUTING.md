@@ -115,6 +115,17 @@ Before opening a PR, verify:
 - Never use `float()` on financial `Decimal` values — use `str()` for
   JSON serialization.
 
+## Building a Skill
+
+The fastest path to becoming a seller:
+
+1. Copy `seller_sdk.py` and rename it
+2. Edit `SKILL_DEFINITION` (label, price, metadata)
+3. Implement `process_task(input_data) -> dict`
+4. Run it — the SDK handles registration, publishing, polling, and settlement
+
+See the "Become a Seller" section in `README.md` for examples.
+
 ## Reporting Issues
 
 Open an issue with:
