@@ -187,7 +187,15 @@ async def get_skill_health(skill_id: str):
         "checked_at": datetime.utcnow().isoformat()
     }
 
-@skills_router.post("/{skill_id}/execute")
+async def verify_internal_api_key(x_internal_api_key: str = Header(None)):
+    """Verify the internal API key for skill execution."""
+    expected = os.getenv("INTERNAL_API_KEY")
+    if not expected:
+        raise HTTPException(status_code=503, detail="Internal API key not configured")
+    if x_internal_api_key != expected:
+        raise HTTPException(status_code=401, detail="Invalid internal API key")
+
+@skills_router.post("/{skill_id}/execute", dependencies=[Depends(verify_internal_api_key)])
 async def execute_skill(skill_id: str, input_data: dict):
     """Ejecutar un skill específico"""
     skill = SKILL_REGISTRY.get(skill_id)

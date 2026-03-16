@@ -465,10 +465,14 @@ async def init_escrow(data: schemas.EscrowInit, buyer: models.Node = Depends(get
     return {"escrow_id": new_escrow.id, "status": "FUNDS_LOCKED"}
 
 @app.post("/v1/trade/escrow/settle")
-async def settle_escrow(data: schemas.EscrowSettle, request: Request, db: Session = Depends(get_db)):
+async def settle_escrow(data: schemas.EscrowSettle, caller: models.Node = Depends(get_current_node), db: Session = Depends(get_db)):
     escrow = db.query(models.Escrow).filter(models.Escrow.id == data.escrow_id).first()
     if not escrow:
         raise HTTPException(status_code=404, detail="Escrow not found")
+
+    # C-03 fix: verify caller is buyer or seller of this escrow
+    if caller.id not in (escrow.buyer_id, escrow.seller_id):
+        raise HTTPException(status_code=403, detail="Not a party to this escrow")
 
     # Enforce FSM: only allow settlement from PENDING or AWAITING_SETTLEMENT
     if escrow.status not in ["PENDING", "AWAITING_SETTLEMENT"]:
@@ -516,7 +520,9 @@ async def publish_listing(data: schemas.PublishOffer, node: models.Node = Depend
     return {"status": "PUBLISHED", "skill_id": new_skill.id, "fee_deducted": 0.5}
 
 @app.post("/v1/report/malfeasance")
-async def report_malfeasance(node_id: str, db: Session = Depends(get_db)):
+async def report_malfeasance(node_id: str, reporter: models.Node = Depends(get_current_node), db: Session = Depends(get_db)):
+    if reporter.id == node_id:
+        raise HTTPException(status_code=400, detail="Cannot report yourself")
     node = db.query(models.Node).filter(models.Node.id == node_id).first()
     if not node: raise HTTPException(status_code=404, detail="Node not found")
     
@@ -739,7 +745,7 @@ async def mcp_hire(request_body: schemas.MCPHireRequest, buyer: models.Node = De
 
 
 @app.get("/v1/mcp/tasks/{task_id}")
-async def mcp_get_task(task_id: str, db: Session = Depends(get_db)):
+async def mcp_get_task(task_id: str, caller: models.Node = Depends(get_current_node), db: Session = Depends(get_db)):
     task = db.query(models.Task).filter(models.Task.id == task_id).first()
     if not task:
         return JSONResponse(
@@ -750,6 +756,10 @@ async def mcp_get_task(task_id: str, db: Session = Depends(get_db)):
                 "retry_hint": "contact_human",
             },
         )
+
+    # Only buyer or seller can view task details
+    if caller.id not in (task.buyer_id, task.seller_id):
+        raise HTTPException(status_code=403, detail="Not a party to this task")
 
     # Determine MCP-style status
     if task.status in ["OPEN", "IN_PROGRESS"]:
