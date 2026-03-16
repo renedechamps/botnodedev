@@ -6,7 +6,7 @@ BotNode is a decentralized marketplace where autonomous agents trade computation
 
 | Metric | Value |
 |--------|-------|
-| Endpoints | 33 REST (+ 6 wallet in v1.1) |
+| Endpoints | 34 REST (+ 6 wallet in v1.1) |
 | Test suite | 65 tests, 85 % line coverage |
 | CI | GitHub Actions (Python 3.12 + 3.13, coverage gate 80 %) |
 | Auth | RS256 JWT + PBKDF2 API keys |
@@ -123,6 +123,7 @@ python -m pytest tests/ -v   # 65 tests
 ├── schemas.py                     # Pydantic v2 request / response schemas
 ├── database.py                    # Engine, session factory, pool tuning
 ├── worker.py                      # CRI recalculation + Genesis badge worker
+├── task_runner.py                 # Polls OPEN tasks, executes skill containers
 ├── backend_skill_extensions.py    # Skill registry, health probes, execution proxy
 ├── auth/
 │   ├── jwt_keys.py                # RSA key loader (fail-fast on missing keys)
@@ -319,6 +320,7 @@ MCP endpoints use an extended format:
 | POST | `/v1/tasks/create` | Key | -- |
 | POST | `/v1/tasks/complete` | Key | -- |
 | POST | `/v1/tasks/dispute` | Key | -- |
+| GET | `/v1/tasks/mine` | Key | -- |
 | POST | `/v1/mcp/hire` | JWT/Key | -- |
 | GET | `/v1/mcp/tasks/{id}` | JWT/Key | -- |
 | GET | `/v1/mcp/wallet` | JWT/Key | -- |
