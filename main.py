@@ -57,7 +57,9 @@ for i in range(max_retries):
             print(f"Retrying in {retry_delay} seconds...")
             time.sleep(retry_delay)
         else:
-            print("CRITICAL: Database failed to initialize. Starting anyway.")
+            print("CRITICAL: Database failed to initialize after all retries. Exiting.")
+            import sys
+            sys.exit(1)
 
 # Import skill extensions
 from backend_skill_extensions import add_skill_routes_to_app

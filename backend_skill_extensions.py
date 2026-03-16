@@ -11,6 +11,7 @@ from fastapi import APIRouter, HTTPException, Depends, Header
 from sqlalchemy.orm import Session
 import httpx
 from datetime import datetime
+from pathlib import Path
 
 # Router para endpoints de skills
 skills_router = APIRouter(prefix="/api/v1/skills", tags=["skills"])
@@ -20,15 +21,47 @@ IS_DOCKER = os.getenv("IS_DOCKER", "false").lower() == "true"
 BASE_HOST = "localhost" if not IS_DOCKER else "skill"
 INTERNAL_API_KEY = os.getenv("INTERNAL_API_KEY", "")
 
+# Persistent skill registry file
+SKILL_REGISTRY_PATH = Path(os.getenv("SKILL_REGISTRY_PATH", "skill_registry.json"))
+
 # Registro dinámico de skills
 SKILL_REGISTRY: Dict[str, Dict] = {}
 SKILL_CATEGORIES: Dict[str, List[str]] = {}
 
+def _save_registry_to_disk():
+    """Persist skill registry to JSON file."""
+    try:
+        data = {"skills": SKILL_REGISTRY, "categories": SKILL_CATEGORIES}
+        SKILL_REGISTRY_PATH.write_text(json.dumps(data, indent=2, default=str))
+    except Exception as e:
+        print(f"Warning: could not persist skill registry: {e}")
+
+
+def _load_registry_from_disk() -> bool:
+    """Load skill registry from JSON file. Returns True if loaded."""
+    global SKILL_REGISTRY, SKILL_CATEGORIES
+    if not SKILL_REGISTRY_PATH.exists():
+        return False
+    try:
+        data = json.loads(SKILL_REGISTRY_PATH.read_text())
+        SKILL_REGISTRY.update(data.get("skills", {}))
+        SKILL_CATEGORIES.update(data.get("categories", {}))
+        print(f"Loaded {len(SKILL_REGISTRY)} skills from {SKILL_REGISTRY_PATH}")
+        return bool(SKILL_REGISTRY)
+    except Exception as e:
+        print(f"Warning: could not load skill registry from disk: {e}")
+        return False
+
+
 def initialize_skill_registry():
     """Inicializar registro de skills con los 38 skills disponibles"""
-    print("🚀 Inicializando registro de skills...")
-    print(f"🔧 Modo: {'Docker' if IS_DOCKER else 'Desarrollo local'}")
+    print("Initializing skill registry...")
+    print(f"Mode: {'Docker' if IS_DOCKER else 'Local development'}")
     print(f"Internal API Key: {'configured' if INTERNAL_API_KEY else 'NOT SET — skill execution will fail'}")
+
+    # Try loading from persistent file first
+    if _load_registry_from_disk():
+        return
     
     # Skills core (primeros 10) - CONFIGURACIÓN PARA DESARROLLO LOCAL
     core_skills = [
@@ -109,12 +142,11 @@ def initialize_skill_registry():
             SKILL_CATEGORIES[category] = []
         SKILL_CATEGORIES[category].append(skill["id"])
     
-    print(f"✅ Registro inicializado: {len(SKILL_REGISTRY)} skills")
-    print(f"✅ Categorías: {list(SKILL_CATEGORIES.keys())}")
-    
-    # Mostrar endpoints configurados
-    for skill_id, skill in SKILL_REGISTRY.items():
-        print(f"  • {skill_id}: {skill['endpoint']}")
+    print(f"Registry initialized: {len(SKILL_REGISTRY)} skills")
+    print(f"Categories: {list(SKILL_CATEGORIES.keys())}")
+
+    # Persist to disk for crash recovery
+    _save_registry_to_disk()
 
 async def check_skill_health(skill_id: str) -> bool:
     """Verificar salud de un skill"""
