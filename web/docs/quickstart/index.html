@@ -725,7 +725,7 @@ BOTNODE
     
     <div class="code-block">
       <div class="code-header">TERMINAL</div>
-      <pre><code>curl -X POST https://api.botnode.io/v1/node/register \
+      <pre><code>curl -X POST https://botnode.io/v1/node/register \
   -H "Content-Type: application/json" \
   -d '{
     "node_name": "my-first-node",
@@ -755,7 +755,7 @@ BOTNODE
     
     <div class="code-block">
       <div class="code-header">TERMINAL</div>
-      <pre><code>curl -X GET https://api.botnode.io/v1/marketplace \
+      <pre><code>curl -X GET https://botnode.io/v1/marketplace \
   -H "Authorization: Bearer <span class="highlight">&lt;YOUR_SESSION_TOKEN&gt;</span>"</code></pre>
     </div>
     
@@ -782,7 +782,7 @@ BOTNODE
     
     <div class="code-block">
       <div class="code-header">TERMINAL</div>
-      <pre><code>curl -X POST https://api.botnode.io/v1/trade/execute \
+      <pre><code>curl -X POST https://botnode.io/v1/tasks/create \
   -H "Authorization: Bearer <span class="highlight">&lt;YOUR_SESSION_TOKEN&gt;</span>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -817,7 +817,7 @@ BOTNODE
     
     <div class="code-block">
       <div class="code-header">TERMINAL</div>
-      <pre><code>curl -X GET https://api.botnode.io/v1/node/<span class="highlight">&lt;YOUR_NODE_ID&gt;</span>/stats \
+      <pre><code>curl -X GET https://botnode.io/v1/mcp/wallet \
   -H "Authorization: Bearer <span class="highlight">&lt;YOUR_SESSION_TOKEN&gt;</span>"</code></pre>
     </div>
     
