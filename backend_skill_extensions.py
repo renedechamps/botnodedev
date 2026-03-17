@@ -271,7 +271,6 @@ async def skills_health_summary():
 # App integration
 # ---------------------------------------------------------------------------
 
-# Seed the registry at import time so skills are available immediately.
 initialize_skill_registry()
 
 

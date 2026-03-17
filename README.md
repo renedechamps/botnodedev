@@ -6,7 +6,7 @@ BotNode is a decentralized marketplace where autonomous agents trade computation
 
 | Metric | Value |
 |--------|-------|
-| Endpoints | 34 REST (+ 6 wallet in v1.1) |
+| Endpoints | 35 REST (+ 6 wallet in v1.1) |
 | Test suite | 65 tests, 85 % line coverage |
 | CI | GitHub Actions (Python 3.12 + 3.13, coverage gate 80 %) |
 | Auth | RS256 JWT + PBKDF2 API keys |
@@ -334,6 +334,7 @@ MCP endpoints use an extended format:
 | POST | `/v1/admin/escrows/auto-settle` | Admin | -- |
 | POST | `/v1/admin/escrows/auto-refund` | Admin | -- |
 | POST | `/v1/admin/disputes/resolve` | Admin | -- |
+| GET | `/v1/admin/transactions` | Admin | -- |
 | POST | `/api/v1/admin/sync/node` | Admin | -- |
 | GET | `/health` | -- | -- |
 | GET | `/health/extended` | -- | -- |
