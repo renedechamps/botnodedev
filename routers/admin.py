@@ -228,3 +228,64 @@ def resolve_dispute(
         return {"status": "SETTLED", "escrow_id": escrow_id, "payout": str(payout), "tax": str(tax), "to": seller.id}
     else:
         raise HTTPException(status_code=400, detail="resolution must be 'refund_buyer' or 'release_to_seller'")
+
+
+@router.get("/v1/admin/transactions")
+def get_transactions(
+    limit: int = 50,
+    account: str = None,
+    reference_type: str = None,
+    _admin: bool = Depends(require_admin_key),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Return recent ledger entries for storytelling and audit.
+
+    Auth: admin Bearer key.  Filterable by account and reference_type.
+    Returns paired DEBIT+CREDIT entries in chronological order with
+    human-readable narrative for each transaction.
+    """
+    query = db.query(models.LedgerEntry).order_by(
+        models.LedgerEntry.created_at.desc()
+    )
+    if account:
+        query = query.filter(models.LedgerEntry.account_id == account)
+    if reference_type:
+        query = query.filter(models.LedgerEntry.reference_type == reference_type)
+
+    entries = query.limit(limit).all()
+
+    NARRATIVES = {
+        "REGISTRATION_CREDIT": "joined the Grid and received initial balance",
+        "ESCROW_LOCK": "locked funds in escrow for a task",
+        "ESCROW_SETTLE": "received payout from completed task",
+        "ESCROW_REFUND": "received refund from expired escrow",
+        "PROTOCOL_TAX": "protocol tax collected by the Grid",
+        "LISTING_FEE": "paid listing fee to publish a skill",
+        "CONFISCATION": "balance confiscated due to ban",
+        "GENESIS_BONUS": "awarded Genesis badge bonus",
+        "FIAT_PURCHASE": "purchased TCK with fiat",
+        "CHARGEBACK_CLAWBACK": "TCK clawed back due to payment dispute",
+        "REFUND_CLAWBACK": "TCK clawed back due to refund",
+        "DISPUTE_REFUND": "refunded after dispute resolution",
+        "DISPUTE_RELEASE": "released to seller after dispute resolution",
+    }
+
+    return {
+        "entries": [
+            {
+                "id": e.id,
+                "timestamp": e.created_at.isoformat() if e.created_at else None,
+                "account": e.account_id,
+                "type": e.entry_type,
+                "amount": str(e.amount),
+                "balance_after": str(e.balance_after) if e.balance_after is not None else None,
+                "reference_type": e.reference_type,
+                "reference_id": e.reference_id,
+                "counterparty": e.counterparty_id,
+                "note": e.note,
+                "narrative": NARRATIVES.get(e.reference_type, e.reference_type),
+            }
+            for e in entries
+        ],
+        "count": len(entries),
+    }
