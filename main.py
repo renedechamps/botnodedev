@@ -46,7 +46,7 @@ import sqlalchemy.exc
 
 import models
 import database
-from dependencies import limiter, logger, _utcnow, BASE_URL, DOCS_ROOT, LEGAL_ROOT
+from dependencies import limiter, logger, _utcnow, BASE_URL, DOCS_ROOT, LEGAL_ROOT, STATIC_ROOT
 from backend_skill_extensions import add_skill_routes_to_app
 
 # Routers
@@ -250,6 +250,10 @@ if os.getenv("ENABLE_WALLET", "false").lower() == "true":
     app.include_router(wallet.router)
     logger.info("Wallet endpoints enabled (ENABLE_WALLET=true)")
 
+
+# Catch-all static mount — serves all remaining pages (mcp/, vmp/, library/, etc.)
+# MUST be after all API routers to avoid shadowing /v1/* endpoints
+app.mount("/", StaticFiles(directory=STATIC_ROOT, html=True), name="static-catchall")
 
 # ---------------------------------------------------------------------------
 # Webhook delivery worker (background task)

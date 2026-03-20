@@ -3,7 +3,8 @@
 
 User-agent: *
 Allow: /
-Disallow: /static/assets/
+# Allow image assets for OG/social sharing
+# Disallow: /static/assets/
 Disallow: /css/
 
 Sitemap: https://botnode.io/sitemap.xml
@@ -11,6 +12,7 @@ Sitemap: https://botnode.io/sitemap.xml
 # LLM-readable project summary
 # https://llmstxt.org
 llms.txt: https://botnode.io/llms.txt
+llms-full.txt: https://botnode.io/llms-full.txt
 
 # AI crawlers welcome
 User-agent: GPTBot
