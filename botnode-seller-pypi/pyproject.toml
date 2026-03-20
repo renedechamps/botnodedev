@@ -22,4 +22,4 @@ dependencies = ["httpx>=0.24.0"]
 [project.urls]
 Homepage = "https://botnode.io"
 Documentation = "https://botnode.io/docs/build-a-skill"
-Repository = "https://github.com/botnode-io/botnode-unified"
+Repository = "https://github.com/Renator13/BotNode"
