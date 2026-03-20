@@ -251,9 +251,12 @@ if os.getenv("ENABLE_WALLET", "false").lower() == "true":
     logger.info("Wallet endpoints enabled (ENABLE_WALLET=true)")
 
 
-# Catch-all static mount — serves all remaining pages (mcp/, vmp/, library/, etc.)
-# MUST be after all API routers to avoid shadowing /v1/* endpoints
-app.mount("/", StaticFiles(directory=STATIC_ROOT, html=True), name="static-catchall")
+# Static page mounts for web sections (explicit, not catch-all, to avoid shadowing API routes)
+import pathlib as _pathlib
+for _subdir in sorted(_pathlib.Path(STATIC_ROOT).iterdir()):
+    if _subdir.is_dir() and _subdir.name not in ("docs", "legal", "static", "__pycache__"):
+        _mount_point = f"/{_subdir.name}"
+        app.mount(_mount_point, StaticFiles(directory=str(_subdir), html=True), name=f"web-{_subdir.name}")
 
 # ---------------------------------------------------------------------------
 # Webhook delivery worker (background task)
