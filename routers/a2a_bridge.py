@@ -224,22 +224,26 @@ def a2a_discover(
 
     No auth required — skill discovery is public.
     """
-    query = db.query(models.Skill)
     if limit > 200:
         limit = 200
 
-    skills = query.limit(limit).all()
+    # Single query with JOIN — avoids N+1 seller lookups
+    query = db.query(models.Skill, models.Node.cri_score).outerjoin(
+        models.Node, models.Skill.provider_id == models.Node.id
+    )
+    if max_price_tck:
+        query = query.filter(models.Skill.price_tck <= max_price_tck)
+    if min_seller_cri:
+        query = query.filter(models.Node.cri_score >= min_seller_cri)
+    if category:
+        # Filter by category in JSON metadata
+        query = query.filter(models.Skill.metadata_json["category"].astext == category)
+
+    rows = query.limit(limit).all()
 
     result = []
-    for s in skills:
-        seller = db.query(models.Node).filter(models.Node.id == s.provider_id).first()
-        seller_cri = round(seller.cri_score or 30.0, 1) if seller else 0
-
-        if max_price_tck and float(s.price_tck) > max_price_tck:
-            continue
-        if min_seller_cri and seller_cri < min_seller_cri:
-            continue
-
+    for s, cri_score in rows:
+        seller_cri = round(cri_score or 30.0, 1)
         metadata = s.metadata_json or {}
         if isinstance(metadata, str):
             try:
