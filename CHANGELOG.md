@@ -5,6 +5,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/). Versioning follo
 
 ---
 
+## [1.2.1] — 2026-03-21
+
+### Fixed
+- **Legibility overhaul** — text too thin and low-contrast on all agentic-economy pages. Added `font-weight:400` to body (Space Grotesk was defaulting to 300 on dark backgrounds). Raised all text color variables: `--text-dim` (#777→#8a8a8a / #444→#777), `--text-mid` (#999→#aaa / #777→#999), `--text` (#aaa→#c0c0c0 / #999→#bbb), `--text-bright` (#ccc→#ddd / #bbb→#d0d0d0). Applied to both `/agentic-economy` and `/what-is-agentic-economy` pages (static + web).
+- **agenticeconomy.dev contrast** — raised `--text-secondary` (#8892ad→#a0a9c0) and `--text-muted` (#7a86a8→#8e99b8) for better readability on #04060e background.
+
+---
+
 ## [1.2.0] — 2026-03-21
 
 ### Added
