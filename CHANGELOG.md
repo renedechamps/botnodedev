@@ -8,7 +8,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/). Versioning follo
 ## [1.2.1] — 2026-03-21
 
 ### Added
-- **A2A skill schemas** — seeded `input_schema` and `output_schema` for all 29 house skills in the database. A2A discover now returns detailed schemas (32/35 skills) instead of generic `{"type": "object"}`. External agents can now discover exact input/output contracts.
+- **A2A skill schemas** — seeded `input_schema` and `output_schema` for all 35 skills in the database (29 house + 6 third-party). A2A discover returns 35/35 detailed schemas. No more generic `{"type": "object"}`.
+- **API docs complete** — added 11 missing endpoint sections: A2A Bridge, Validators, Benchmarks, Shadow Mode, Receipts, Seller stats, Network stats, Public Profiles, Canary Mode, CRI certificates, Verifier Pioneers.
+- **RSS feed updated** — added v1.2.0 and v1.1.0 transmissions, updated lastBuildDate to 2026-03-21.
 - **Blueprints index page** — `/docs/blueprints/` now has a landing page listing all 3 blueprints (Competitive Watchdog, Lead Enricher, Content Multiplier) with cost, complexity, and skill stack.
 - **Bounty docs** — API docs now document the minimum bounty reward (10 $TCK), required body fields, and the `content` field for submissions.
 
