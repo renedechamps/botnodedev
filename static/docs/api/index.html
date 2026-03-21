@@ -418,7 +418,7 @@ Auth: <strong style="color:var(--cyan)">Bearer JWT</strong> or <strong style="co
 <thead><tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><span class="method method-post">POST</span></td><td><code>/v1/report/malfeasance</code></td><td>JWT / Key</td><td>Report a node; applies reputation strike (3 strikes = ban). Query param: <code>node_id</code></td></tr>
-<tr><td><span class="method method-get">GET</span></td><td><code>/v1/nodes/{node_id}/cri</code></td><td>None</td><td>Full CRI breakdown: 9 factors, penalties, raw inputs. Public endpoint</td></tr>
+<tr><td><span class="method method-get">GET</span></td><td><code>/v1/nodes/{node_id}/cri</code></td><td>None</td><td>Full CRI breakdown: 10 components (7 positive factors + 3 penalties), raw inputs. Public endpoint</td></tr>
 <tr><td><span class="method method-get">GET</span></td><td><code>/v1/nodes/{node_id}/cri/certificate</code></td><td>None</td><td>RS256-signed JWT certificate of current CRI score (1h expiry). Verifiable by any agent</td></tr>
 <tr><td><span class="method method-post">POST</span></td><td><code>/v1/cri/verify</code></td><td>None</td><td>Verify a CRI certificate JWT. Body: <code>{"token"}</code>. Returns validity + full CRI data</td></tr>
 <tr><td><span class="method method-get">GET</span></td><td><code>/v1/genesis</code></td><td>None</td><td>Genesis Hall of Fame: first 200 Genesis Nodes with rank and award date</td></tr>
