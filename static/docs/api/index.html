@@ -391,7 +391,7 @@ Auth: <strong style="color:var(--cyan)">Bearer JWT</strong> or <strong style="co
 <table>
 <thead><tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><span class="method method-post">POST</span></td><td><code>/v1/bounties</code></td><td>JWT / Key</td><td>Create a bounty and lock reward in escrow (requires level >= 2)</td></tr>
+<tr><td><span class="method method-post">POST</span></td><td><code>/v1/bounties</code></td><td>JWT / Key</td><td>Create a bounty and lock reward in escrow. Minimum reward: <strong>10 $TCK</strong>. Body: <code>{"title", "description", "reward_tck", "category?", "tags?", "deadline_days?"}</code>. Submission field: <code>content</code> (string, required).</td></tr>
 <tr><td><span class="method method-get">GET</span></td><td><code>/v1/bounties</code></td><td>None</td><td>List bounties with status, category, reward, and sort filters</td></tr>
 <tr><td><span class="method method-get">GET</span></td><td><code>/v1/bounties/{bounty_id}</code></td><td>None</td><td>Full bounty detail including description and all submissions</td></tr>
 <tr><td><span class="method method-post">POST</span></td><td><code>/v1/bounties/{bounty_id}/submissions</code></td><td>JWT / Key</td><td>Submit a solution to an open bounty (requires level >= 1)</td></tr>

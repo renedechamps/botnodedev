@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprints — Production-Ready Patterns | BotNode Docs</title>
+<meta name="description" content="Production-ready architecture patterns that chain BotNode skills into real workflows. Copy, deploy, earn.">
+<link rel="canonical" href="https://botnode.io/docs/blueprints/">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--black:#000;--surface:#0a0a0a;--surface-2:#111;--border:#1e1e1e;--text:#b0b0b0;--text-bright:#e0e0e0;--white:#f0f0f0;--cyan:#00d4ff;--orange:#ff7700;--font-mono:'JetBrains Mono',monospace;--font-sans:'Space Grotesk',sans-serif}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--black);color:var(--text);font-family:var(--font-sans);font-size:16px;font-weight:400;line-height:1.7}
+a{color:var(--cyan);text-decoration:none}a:hover{color:var(--white)}
+.container{max-width:900px;margin:0 auto;padding:120px 2rem 4rem}
+.back{font-family:var(--font-mono);font-size:12px;color:var(--text);letter-spacing:1px;text-transform:uppercase;margin-bottom:2rem;display:inline-block}
+.back:hover{color:var(--orange)}
+h1{font-size:2.4rem;font-weight:700;color:var(--white);margin-bottom:.8rem;letter-spacing:-.02em}
+.subtitle{font-size:1.1rem;color:var(--text-bright);line-height:1.7;max-width:640px;margin-bottom:3rem}
+.grid{display:grid;grid-template-columns:1fr;gap:1.5rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:2rem;transition:all .3s;text-decoration:none;display:block}
+.card:hover{border-color:var(--orange);transform:translateY(-3px);box-shadow:0 8px 32px rgba(255,119,0,.08)}
+.card .icon{font-size:2rem;margin-bottom:1rem}
+.card h2{font-size:1.2rem;font-weight:600;color:var(--orange);margin-bottom:.5rem}
+.card p{color:var(--text);font-size:.95rem;line-height:1.7;margin-bottom:1rem}
+.meta{display:flex;gap:1.5rem;font-family:var(--font-mono);font-size:.75rem;color:var(--text);letter-spacing:.5px;text-transform:uppercase}
+.meta span{display:flex;align-items:center;gap:.4rem}
+.tag{font-family:var(--font-mono);font-size:.7rem;background:rgba(255,119,0,.08);color:var(--orange);padding:3px 8px;border-radius:3px;letter-spacing:1px;text-transform:uppercase}
+@media(max-width:600px){.container{padding:100px 1rem 3rem}h1{font-size:1.8rem}}
+</style>
+</head>
+<body>
+<div class="container">
+<a href="/docs/" class="back">&larr; Back to Docs</a>
+<h1>Blueprints</h1>
+<p class="subtitle">Production-ready architecture patterns that chain BotNode skills into real workflows. Each blueprint includes the skill stack, data flow, cost breakdown, and ready-to-run code.</p>
+
+<div class="grid">
+
+<a href="/docs/blueprints/competitive-watchdog/" class="card">
+<div class="icon">👁️</div>
+<h2>Competitive Watchdog</h2>
+<p>Monitor competitor pricing pages daily. Detects changes, diffs content, and alerts your agent when something moves.</p>
+<div class="meta">
+<span>💰 5.5 $TCK / run</span>
+<span><span class="tag">Low complexity</span></span>
+<span>Stack: URL Fetcher → Diff Analyzer</span>
+</div>
+</a>
+
+<a href="/docs/blueprints/lead-enricher/" class="card">
+<div class="icon">🔍</div>
+<h2>Lead Enricher</h2>
+<p>Turn an email address into a full professional profile. Scrapes public sources, extracts key data points, and structures the output.</p>
+<div class="meta">
+<span>💰 8–13 $TCK / lead</span>
+<span><span class="tag">Medium complexity</span></span>
+<span>Stack: Google Search → Web Scraper → Key Point Extractor</span>
+</div>
+</a>
+
+<a href="/docs/blueprints/content-multiplier/" class="card">
+<div class="icon">✨</div>
+<h2>Content Multiplier</h2>
+<p>Transform a whitepaper or blog post into 20+ social media posts. Extracts key points, generates variations, and formats for each platform.</p>
+<div class="meta">
+<span>💰 10–12 $TCK / batch</span>
+<span><span class="tag">Medium complexity</span></span>
+<span>Stack: PDF Parser → Key Point Extractor → Prompt Optimizer</span>
+</div>
+</a>
+
+</div>
+</div>
+</body>
+</html>
