@@ -43,20 +43,41 @@ limiter = Limiter(key_func=get_remote_address)
 BASE_URL = os.getenv("BASE_URL", "https://botnode.io")
 
 MCP_CAPABILITIES = {
-    "web-research": {
-        "skill_id": None,  # resolved by label fallback in mcp_hire
-        "label_match": "web_research_v1",
-        "description": "Deep web research with structured analysis.",
-        "typical_price": 1.0,
-        "eta_seconds": 30,
-    },
-    "pdf-summarizer": {
-        "skill_id": None,  # resolved by label fallback in mcp_hire
-        "label_match": "pdf_parser_v1",
-        "description": "Extract text and metadata from PDF documents.",
-        "typical_price": 0.4,
-        "eta_seconds": 15,
-    },
+    # Infrastructure
+    "url-fetcher":            {"skill_id": None, "typical_price": 0.3,  "eta_seconds": 10},
+    "web-scraper":            {"skill_id": None, "typical_price": 0.5,  "eta_seconds": 15},
+    "google-search":          {"skill_id": None, "typical_price": 0.5,  "eta_seconds": 15},
+    # Data processing
+    "csv-parser":             {"skill_id": None, "typical_price": 0.3,  "eta_seconds": 10},
+    "pdf-parser":             {"skill_id": None, "typical_price": 0.4,  "eta_seconds": 15},
+    "pdf-summarizer":         {"skill_id": None, "typical_price": 0.4,  "eta_seconds": 15},
+    "schema-enforcer":        {"skill_id": None, "typical_price": 0.3,  "eta_seconds": 10},
+    # Generation
+    "text-translator":        {"skill_id": None, "typical_price": 0.5,  "eta_seconds": 15},
+    "prompt-optimizer":       {"skill_id": None, "typical_price": 0.5,  "eta_seconds": 15},
+    "report-builder":         {"skill_id": None, "typical_price": 0.7,  "eta_seconds": 20},
+    "report-compiler":        {"skill_id": None, "typical_price": 0.5,  "eta_seconds": 20},
+    "document-reporter":      {"skill_id": None, "typical_price": 0.7,  "eta_seconds": 20},
+    "text-to-voice":          {"skill_id": None, "typical_price": 0.7,  "eta_seconds": 20},
+    "schema-generator":       {"skill_id": None, "typical_price": 0.5,  "eta_seconds": 15},
+    # Validation
+    "quality-gate":           {"skill_id": None, "typical_price": 0.5,  "eta_seconds": 15},
+    "hallucination-detector": {"skill_id": None, "typical_price": 0.7,  "eta_seconds": 20},
+    "code-reviewer":          {"skill_id": None, "typical_price": 1.0,  "eta_seconds": 20},
+    "compliance-checker":     {"skill_id": None, "typical_price": 1.0,  "eta_seconds": 20},
+    "logic-visualizer":       {"skill_id": None, "typical_price": 0.5,  "eta_seconds": 15},
+    # Analysis
+    "sentiment-analyzer":     {"skill_id": None, "typical_price": 0.3,  "eta_seconds": 10},
+    "language-detector":      {"skill_id": None, "typical_price": 0.1,  "eta_seconds": 10},
+    "key-point-extractor":    {"skill_id": None, "typical_price": 0.3,  "eta_seconds": 10},
+    "diff-analyzer":          {"skill_id": None, "typical_price": 0.3,  "eta_seconds": 10},
+    "web-research":           {"skill_id": None, "typical_price": 1.0,  "eta_seconds": 30},
+    "performance-analyzer":   {"skill_id": None, "typical_price": 1.0,  "eta_seconds": 20},
+    "lead-enricher":          {"skill_id": None, "typical_price": 0.5,  "eta_seconds": 15},
+    "image-describer":        {"skill_id": None, "typical_price": 0.5,  "eta_seconds": 15},
+    "vector-memory":          {"skill_id": None, "typical_price": 0.3,  "eta_seconds": 10},
+    "notification-router":    {"skill_id": None, "typical_price": 0.3,  "eta_seconds": 10},
+    "scheduler":              {"skill_id": None, "typical_price": 0.5,  "eta_seconds": 15},
 }
 
 # ---------------------------------------------------------------------------

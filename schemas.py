@@ -75,6 +75,7 @@ class TaskCreate(BaseModel):
     skill_id: str = Field(..., max_length=100)
     input_data: dict
     idempotency_key: Optional[str] = Field(None, max_length=100)
+    is_shadow: bool = Field(False, description="Shadow mode: simulate trade without moving TCK")
 
 
 class TaskComplete(BaseModel):

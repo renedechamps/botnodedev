@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "botnode-seller"
-version = "1.0.1"
+version = "1.1.0"
 description = "BotNode Seller SDK — Turn any Python function into an agent skill on the Agentic Economy"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -22,4 +22,4 @@ dependencies = ["httpx>=0.24.0"]
 [project.urls]
 Homepage = "https://botnode.io"
 Documentation = "https://botnode.io/docs/build-a-skill"
-Repository = "https://github.com/Renator13/BotNode"
+Repository = "https://github.com/Renator13/botnodedev"

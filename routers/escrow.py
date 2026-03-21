@@ -184,6 +184,20 @@ def create_task(data: schemas.TaskCreate, buyer: models.Node = Depends(get_node)
             task = db.query(models.Task).filter(models.Task.escrow_id == existing.id).first()
             return {"task_id": task.id if task else None, "escrow_id": existing.id, "status": "QUEUED", "idempotent": True}
 
+    # --- Shadow mode: simulate without moving TCK ---
+    if data.is_shadow:
+        new_task = models.Task(
+            skill_id=data.skill_id,
+            buyer_id=buyer.id,
+            seller_id=skill.provider_id,
+            input_data=data.input_data,
+            status="OPEN",
+            is_shadow=True,
+        )
+        db.add(new_task)
+        db.commit()
+        return {"task_id": new_task.id, "escrow_id": None, "status": "QUEUED", "shadow": True}
+
     # Lock buyer row to prevent double-spend
     buyer = db.query(models.Node).filter(models.Node.id == buyer.id).with_for_update().first()
     if buyer.balance < skill.price_tck:
@@ -233,19 +247,30 @@ def create_task(data: schemas.TaskCreate, buyer: models.Node = Depends(get_node)
 @router.get("/v1/tasks/mine")
 def get_my_tasks(
     status: str = "OPEN",
+    role: str = "seller",
     seller: models.Node = Depends(get_node),
     db: Session = Depends(get_db),
 ) -> dict:
-    """List tasks assigned to the authenticated seller, filtered by status.
+    """List tasks for the authenticated node, filtered by status and role.
 
-    Auth: API key.  Sellers poll this endpoint to discover work to do.
-    Third-party seller agents use this in a loop: poll → execute → complete.
-    The internal Task Runner also uses this for house skills.
+    Auth: API key.
+    Query params:
+        status — task status filter (OPEN, IN_PROGRESS, COMPLETED, DISPUTED)
+        role   — "seller" (default) or "buyer" or "any"
+
+    Sellers poll this with role=seller to discover work to do.
+    Buyers use role=buyer to track their purchases and results.
     """
-    tasks = db.query(models.Task).filter(
-        models.Task.seller_id == seller.id,
-        models.Task.status == status,
-    ).order_by(models.Task.created_at.asc()).all()
+    query = db.query(models.Task).filter(models.Task.status == status)
+    if role == "buyer":
+        query = query.filter(models.Task.buyer_id == seller.id)
+    elif role == "any":
+        query = query.filter(
+            (models.Task.seller_id == seller.id) | (models.Task.buyer_id == seller.id)
+        )
+    else:
+        query = query.filter(models.Task.seller_id == seller.id)
+    tasks = query.order_by(models.Task.created_at.asc()).all()
 
     # Pre-fetch skill labels for all tasks
     skill_ids = list(set(t.skill_id for t in tasks if t.skill_id))
@@ -256,6 +281,7 @@ def get_my_tasks(
 
     return {
         "node_id": seller.id,
+        "role": role,
         "status_filter": status,
         "tasks": [
             {
@@ -263,8 +289,11 @@ def get_my_tasks(
                 "skill_id": t.skill_id,
                 "skill_label": skill_map.get(t.skill_id, t.skill_id),
                 "buyer_id": t.buyer_id,
+                "seller_id": t.seller_id,
                 "input_data": t.input_data,
+                "output_data": t.output_data,
                 "escrow_id": t.escrow_id,
+                "status": t.status,
                 "created_at": t.created_at.isoformat() if t.created_at else None,
             }
             for t in tasks

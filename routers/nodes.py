@@ -20,7 +20,7 @@ from dependencies import (
 )
 from auth.jwt_tokens import issue_access_token
 from worker import check_and_award_genesis_badges, recalculate_cri
-from config import INITIAL_NODE_BALANCE, CHALLENGE_TTL_SECONDS
+from config import INITIAL_NODE_BALANCE, CHALLENGE_TTL_SECONDS, LEVELS
 from ledger import record_transfer, MINT
 
 router = APIRouter(tags=["nodes"])
@@ -199,6 +199,142 @@ def get_node_profile(node_id: str, db: Session = Depends(get_db)) -> dict:
         "skills": [
             {"id": s.id, "label": s.label, "price": str(s.price_tck)} for s in skills
         ]
+    }
+
+
+@router.get("/v1/node/me")
+def get_my_profile(node: models.Node = Depends(get_current_node), db: Session = Depends(get_db)) -> dict:
+    """Return the authenticated node's full profile.
+
+    Auth: API key or JWT.
+    Includes: balance, CRI, level, genesis badge, stats, skills, canary caps.
+    """
+    # Compute level
+    from sqlalchemy import func as sa_func
+    tck_spent = float(db.query(
+        sa_func.coalesce(sa_func.sum(models.LedgerEntry.amount), 0)
+    ).filter(
+        models.LedgerEntry.account_id == node.id,
+        models.LedgerEntry.entry_type == "DEBIT",
+        models.LedgerEntry.reference_type.in_(["ESCROW_LOCK", "LISTING_FEE"]),
+    ).scalar())
+
+    current_level = LEVELS[0]
+    for lvl in LEVELS:
+        cri = float(node.cri_score) if node.cri_score else 0
+        if tck_spent >= lvl["tck_spent"] and cri >= lvl["cri_min"]:
+            current_level = lvl
+
+    # Skills published
+    skills = db.query(models.Skill).filter(models.Skill.provider_id == node.id).all()
+
+    # Task stats
+    tasks_as_buyer = db.query(models.Task).filter(models.Task.buyer_id == node.id).count()
+    tasks_as_seller = db.query(models.Task).filter(models.Task.seller_id == node.id, models.Task.status == "COMPLETED").count()
+
+    # Genesis badge
+    badge = db.query(models.GenesisBadgeAward).filter(models.GenesisBadgeAward.node_id == node.id).first()
+
+    # Pending escrows
+    pending_escrows = db.query(models.Escrow).filter(
+        models.Escrow.buyer_id == node.id,
+        models.Escrow.status.in_(["PENDING", "AWAITING_SETTLEMENT"]),
+    ).count()
+
+    return {
+        "node_id": node.id,
+        "balance_tck": str(node.balance),
+        "cri_score": float(node.cri_score) if node.cri_score else 0,
+        "level": {
+            "id": current_level["id"],
+            "name": current_level["name"],
+            "emoji": current_level["emoji"],
+        },
+        "tck_spent": round(tck_spent, 2),
+        "genesis_badge": {
+            "has_badge": node.has_genesis_badge or False,
+            "rank": badge.genesis_rank if badge else None,
+            "awarded_at": badge.awarded_at.isoformat() if badge else None,
+        },
+        "stats": {
+            "tasks_purchased": tasks_as_buyer,
+            "tasks_completed_as_seller": tasks_as_seller,
+            "skills_published": len(skills),
+        },
+        "skills": [
+            {"id": s.id, "label": s.label, "price_tck": str(s.price_tck)} for s in skills
+        ],
+        "canary": {
+            "max_spend_daily": str(node.max_spend_daily) if node.max_spend_daily else None,
+            "max_escrow_per_task": str(node.max_escrow_per_task) if node.max_escrow_per_task else None,
+        },
+        "pending_escrows": pending_escrows,
+        "member_since": node.created_at.isoformat() if node.created_at else None,
+        "active": node.active,
+    }
+
+
+@router.put("/v1/node/canary")
+def set_canary_caps(
+    caps: dict,
+    node: models.Node = Depends(get_current_node),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Set or update canary mode spend caps for the authenticated node.
+
+    Auth: API key or JWT.
+    Body: {"max_spend_daily": 10.0, "max_escrow_per_task": 2.0}
+    Set a value to null to remove the cap.
+    """
+    locked = db.query(models.Node).filter(models.Node.id == node.id).with_for_update().first()
+    if "max_spend_daily" in caps:
+        val = caps["max_spend_daily"]
+        locked.max_spend_daily = Decimal(str(val)) if val is not None else None
+    if "max_escrow_per_task" in caps:
+        val = caps["max_escrow_per_task"]
+        locked.max_escrow_per_task = Decimal(str(val)) if val is not None else None
+    db.commit()
+    return {
+        "node_id": locked.id,
+        "canary": {
+            "max_spend_daily": str(locked.max_spend_daily) if locked.max_spend_daily else None,
+            "max_escrow_per_task": str(locked.max_escrow_per_task) if locked.max_escrow_per_task else None,
+        },
+    }
+
+
+@router.get("/v1/node/canary")
+def get_canary_caps(node: models.Node = Depends(get_current_node)) -> dict:
+    """Get current canary mode spend caps.
+
+    Auth: API key or JWT.
+    """
+    return {
+        "node_id": node.id,
+        "canary": {
+            "max_spend_daily": str(node.max_spend_daily) if node.max_spend_daily else None,
+            "max_escrow_per_task": str(node.max_escrow_per_task) if node.max_escrow_per_task else None,
+        },
+    }
+
+
+@router.get("/v1/levels")
+def get_levels() -> dict:
+    """Return the level progression table.
+
+    Auth: none (public).
+    """
+    return {
+        "levels": [
+            {
+                "id": lvl["id"],
+                "name": lvl["name"],
+                "emoji": lvl["emoji"],
+                "tck_spent_required": lvl["tck_spent"],
+                "cri_min_required": lvl["cri_min"],
+            }
+            for lvl in LEVELS
+        ],
     }
 
 

@@ -85,17 +85,20 @@ def _register_node(api_url: str) -> str:
     return api_key
 
 
-def _publish_skill(api_url: str, api_key: str, skill_label: str, skill_price: float) -> str | None:
+def _publish_skill(api_url: str, api_key: str, skill_label: str, skill_price: float, metadata: dict | None = None) -> str | None:
     """Publish the skill on the marketplace. Returns skill_id."""
+    default_metadata = {
+        "category": "custom",
+        "description": f"Seller SDK skill: {skill_label}",
+        "version": "1.0.0",
+    }
+    if metadata:
+        default_metadata.update(metadata)
     skill_definition = {
         "label": skill_label,
         "price_tck": skill_price,
         "type": "SKILL_OFFER",
-        "metadata": {
-            "category": "custom",
-            "description": f"Seller SDK skill: {skill_label}",
-            "version": "1.0.0",
-        },
+        "metadata": default_metadata,
     }
     log.info(f"Publishing skill: {skill_label}")
     resp = _client.post(
@@ -162,6 +165,7 @@ def run_seller(
     api_url: str | None = None,
     api_key: str | None = None,
     poll_interval: int | None = None,
+    metadata: dict | None = None,
 ) -> None:
     """Run a seller agent that publishes a skill and processes tasks.
 
@@ -172,6 +176,7 @@ def run_seller(
         api_url: BotNode API base URL. Defaults to env BOTNODE_API_URL or https://botnode.io.
         api_key: Pre-existing API key. Defaults to env BOTNODE_API_KEY or auto-registers.
         poll_interval: Seconds between task polls. Defaults to env SELLER_POLL_INTERVAL or 5.
+        metadata: Optional skill metadata (category, description, version, input_schema, output_schema).
     """
     if not logging.getLogger().handlers:
         logging.basicConfig(
@@ -196,7 +201,7 @@ def run_seller(
         log.info(f'  export BOTNODE_API_KEY="{api_key}"')
 
     # Step 2: Publish skill
-    skill_id = _publish_skill(api_url, api_key, skill_label, skill_price)
+    skill_id = _publish_skill(api_url, api_key, skill_label, skill_price, metadata)
     if not skill_id:
         log.critical("Cannot publish skill — exiting.")
         sys.exit(1)

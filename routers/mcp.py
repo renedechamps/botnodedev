@@ -53,8 +53,9 @@ def mcp_hire(request_body: schemas.MCPHireRequest, buyer: models.Node = Depends(
     if skill_id:
         skill = db.query(models.Skill).filter(models.Skill.id == skill_id).first()
     if not skill:
-        # Fallback: first skill whose label contains the capability name (very MVP)
-        skill = db.query(models.Skill).filter(models.Skill.label.ilike(f"%{request_body.capability}%")).first()
+        # Fallback: match by label — convert hyphens to underscores for DB lookup
+        label_pattern = request_body.capability.replace("-", "_")
+        skill = db.query(models.Skill).filter(models.Skill.label.ilike(f"%{label_pattern}%")).first()
 
     if not skill:
         return JSONResponse(
