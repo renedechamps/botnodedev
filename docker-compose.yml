@@ -66,7 +66,7 @@ services:
         limits:
           memory: 128M
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -h localhost -p 6432 -U ${POSTGRES_USER:-botnode}"]
+      test: ["CMD-SHELL", "nc -z localhost 6432"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -99,7 +99,8 @@ services:
       - "log_min_duration_statement=1000"
       - "-c"
       - "log_checkpoints=on"
-    # Port mapping removed — only Docker containers should access the DB.
+    ports:
+      - "5432:5432"
     restart: always
     deploy:
       resources:
