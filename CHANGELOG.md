@@ -5,6 +5,19 @@ Format follows [Keep a Changelog](https://keepachangelog.com/). Versioning follo
 
 ---
 
+## [1.3.1] — 2026-03-22
+
+### Infrastructure
+- **Cross-region monitoring** — Stockholm monitors Virginia, Virginia monitors Stockholm. Hourly health checks with auto-remediation (container restarts via SSH) and Telegram alerts.
+- **Monitoring covers:** API health, all public websites (botnode.io, agenticeconomy.dev, renedechamps.com), Docker containers, SSH reachability, PostgreSQL replication lag.
+- **Cross-server SSH** — ed25519 key exchange between Virginia and Stockholm for passwordless mutual access.
+- **GitHub sync** — force-pushed local repo to GitHub, cleaned secrets from git history.
+
+### Added
+- `monitoring/` — complete monitoring suite: `config.sh`, `lib.sh`, `check-from-stockholm.sh`, `check-from-virginia.sh`, `setup.sh`.
+
+---
+
 ## [1.3.0] — 2026-03-21
 
 ### Infrastructure
