@@ -6,8 +6,9 @@ services:
     env_file:
       - .env
     volumes:
-      - ./static:/app/static:ro
-      - ./web:/app/web:ro
+      - ./static:/app/static
+      - ./web:/app/web
+      - /var/www/botnode_v2:/var/www/botnode_v2
     extra_hosts:
       - "muthur:host-gateway"
     depends_on:

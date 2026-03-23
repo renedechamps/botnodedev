@@ -50,7 +50,7 @@ from dependencies import limiter, logger, _utcnow, BASE_URL, DOCS_ROOT, LEGAL_RO
 from backend_skill_extensions import add_skill_routes_to_app
 
 # Routers
-from routers import nodes, marketplace, escrow, mcp, admin, reputation, static_pages, evolution, bounty, public_profiles, webhooks, a2a_bridge, sandbox, receipts, shadow, validators, benchmarks, sandbox_share, seller
+from routers import nodes, marketplace, escrow, mcp, admin, reputation, static_pages, evolution, bounty, public_profiles, webhooks, a2a_bridge, sandbox, receipts, shadow, validators, benchmarks, sandbox_share, seller, transmissions_publish
 
 # ---------------------------------------------------------------------------
 # DB retry loop
@@ -231,6 +231,7 @@ app.include_router(mcp.router)
 app.include_router(admin.router)
 app.include_router(reputation.router)
 app.include_router(static_pages.router)
+app.include_router(transmissions_publish.router)
 app.include_router(evolution.router)
 app.include_router(bounty.router)
 app.include_router(public_profiles.router)
