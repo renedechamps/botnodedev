@@ -5,6 +5,42 @@ Format follows [Keep a Changelog](https://keepachangelog.com/). Versioning follo
 
 ---
 
+## [1.5.0] — 2026-03-24
+
+### Academic Research Integration
+- **Research section created** on agenticeconomy.dev with 3 papers, citation meta tags, downloadable PDFs.
+- **3 academic papers published** on Zenodo with permanent DOIs: CRI (9pp/16refs), Taxonomy (20pp/25refs), Oracle Problem (14pp/23refs).
+- **Research nav link** added to all pages across botnode.io, botnode.dev, and agenticeconomy.dev.
+- **Academic Research cards** (R1/R2/R3) added to botnode.io Documentation section.
+- **Hero credibility line** on botnode.io: 3 papers, 39 pages, 62 references, 5 Nobel laureates.
+- **Inline paper links** in botnode.io CRI, Law V, comparison table, and FAQ sections.
+- **Research footer column** added to botnode.io and botnode.dev.
+- **Taxonomy reference** and methodology note added to agenticeconomy.dev/landscape/.
+- **Paper DOI links** added to Foundations section on agenticeconomy.dev landing.
+
+### Data Corrections
+- **SSRN/arXiv replaced** with Zenodo across all 4 websites.
+- **Paper dates corrected** to March 2026 (was April/May for papers 2 and 3).
+- **Preprint references** updated to Published with DOI links.
+- **Bluepaper (not yet public)** corrected on renedechamps.com.
+
+### OG Tags and Social Previews
+- **OG images generated** (1200x630 PNG) for agenticeconomy.dev root, /research/, /landscape/, and botnode.dev.
+- **SVG og:image replaced** with PNG on agenticeconomy.dev (crawlers do not render SVG).
+- **Full OG and Twitter meta tags** added to /research/ page.
+
+### Infrastructure
+- **agenticeconomy.dev migrated** from Hostinger to Virginia (Caddy). AAAA record removed.
+- **Webhook relay** for mariaotamendi.es on Stockholm (port 3200) with Caddy proxy on Virginia.
+- **Mac Mini relay service** (port 8180, launchd) for OpenClaw WhatsApp integration.
+
+### renedechamps.com
+- **About Chapter 12** updated with papers and DOI links.
+- **Blog posts** updated with research addendum; arXiv corrected to Zenodo.
+- **Writing/Blog index** Research section with 3 paper entries.
+- **Contact page** Developer Portal, Open Specification, Research added; @BotNodeio added.
+- **Global footer** botnode.io, botnode.dev, agenticeconomy.dev links on all pages.
+
 ## [1.4.0] — 2026-03-23
 
 ### agenticeconomy.dev — Site Expansion
@@ -38,6 +74,42 @@ Format follows [Keep a Changelog](https://keepachangelog.com/). Versioning follo
 
 ---
 
+## [1.5.0] — 2026-03-24
+
+### Academic Research Integration
+- **Research section created** on agenticeconomy.dev with 3 papers, citation meta tags, downloadable PDFs.
+- **3 academic papers published** on Zenodo with permanent DOIs: CRI (9pp/16refs), Taxonomy (20pp/25refs), Oracle Problem (14pp/23refs).
+- **Research nav link** added to all pages across botnode.io, botnode.dev, and agenticeconomy.dev.
+- **Academic Research cards** (R1/R2/R3) added to botnode.io Documentation section.
+- **Hero credibility line** on botnode.io: 3 papers, 39 pages, 62 references, 5 Nobel laureates.
+- **Inline paper links** in botnode.io CRI, Law V, comparison table, and FAQ sections.
+- **Research footer column** added to botnode.io and botnode.dev.
+- **Taxonomy reference** and methodology note added to agenticeconomy.dev/landscape/.
+- **Paper DOI links** added to Foundations section on agenticeconomy.dev landing.
+
+### Data Corrections
+- **SSRN/arXiv replaced** with Zenodo across all 4 websites.
+- **Paper dates corrected** to March 2026 (was April/May for papers 2 and 3).
+- **Preprint references** updated to Published with DOI links.
+- **Bluepaper (not yet public)** corrected on renedechamps.com.
+
+### OG Tags and Social Previews
+- **OG images generated** (1200x630 PNG) for agenticeconomy.dev root, /research/, /landscape/, and botnode.dev.
+- **SVG og:image replaced** with PNG on agenticeconomy.dev (crawlers do not render SVG).
+- **Full OG and Twitter meta tags** added to /research/ page.
+
+### Infrastructure
+- **agenticeconomy.dev migrated** from Hostinger to Virginia (Caddy). AAAA record removed.
+- **Webhook relay** for mariaotamendi.es on Stockholm (port 3200) with Caddy proxy on Virginia.
+- **Mac Mini relay service** (port 8180, launchd) for OpenClaw WhatsApp integration.
+
+### renedechamps.com
+- **About Chapter 12** updated with papers and DOI links.
+- **Blog posts** updated with research addendum; arXiv corrected to Zenodo.
+- **Writing/Blog index** Research section with 3 paper entries.
+- **Contact page** Developer Portal, Open Specification, Research added; @BotNodeio added.
+- **Global footer** botnode.io, botnode.dev, agenticeconomy.dev links on all pages.
+
 ## [1.3.1] — 2026-03-22
 
 ### Infrastructure
@@ -50,6 +122,42 @@ Format follows [Keep a Changelog](https://keepachangelog.com/). Versioning follo
 - `monitoring/` — complete monitoring suite: `config.sh`, `lib.sh`, `check-from-stockholm.sh`, `check-from-virginia.sh`, `setup.sh`.
 
 ---
+
+## [1.5.0] — 2026-03-24
+
+### Academic Research Integration
+- **Research section created** on agenticeconomy.dev with 3 papers, citation meta tags, downloadable PDFs.
+- **3 academic papers published** on Zenodo with permanent DOIs: CRI (9pp/16refs), Taxonomy (20pp/25refs), Oracle Problem (14pp/23refs).
+- **Research nav link** added to all pages across botnode.io, botnode.dev, and agenticeconomy.dev.
+- **Academic Research cards** (R1/R2/R3) added to botnode.io Documentation section.
+- **Hero credibility line** on botnode.io: 3 papers, 39 pages, 62 references, 5 Nobel laureates.
+- **Inline paper links** in botnode.io CRI, Law V, comparison table, and FAQ sections.
+- **Research footer column** added to botnode.io and botnode.dev.
+- **Taxonomy reference** and methodology note added to agenticeconomy.dev/landscape/.
+- **Paper DOI links** added to Foundations section on agenticeconomy.dev landing.
+
+### Data Corrections
+- **SSRN/arXiv replaced** with Zenodo across all 4 websites.
+- **Paper dates corrected** to March 2026 (was April/May for papers 2 and 3).
+- **Preprint references** updated to Published with DOI links.
+- **Bluepaper (not yet public)** corrected on renedechamps.com.
+
+### OG Tags and Social Previews
+- **OG images generated** (1200x630 PNG) for agenticeconomy.dev root, /research/, /landscape/, and botnode.dev.
+- **SVG og:image replaced** with PNG on agenticeconomy.dev (crawlers do not render SVG).
+- **Full OG and Twitter meta tags** added to /research/ page.
+
+### Infrastructure
+- **agenticeconomy.dev migrated** from Hostinger to Virginia (Caddy). AAAA record removed.
+- **Webhook relay** for mariaotamendi.es on Stockholm (port 3200) with Caddy proxy on Virginia.
+- **Mac Mini relay service** (port 8180, launchd) for OpenClaw WhatsApp integration.
+
+### renedechamps.com
+- **About Chapter 12** updated with papers and DOI links.
+- **Blog posts** updated with research addendum; arXiv corrected to Zenodo.
+- **Writing/Blog index** Research section with 3 paper entries.
+- **Contact page** Developer Portal, Open Specification, Research added; @BotNodeio added.
+- **Global footer** botnode.io, botnode.dev, agenticeconomy.dev links on all pages.
 
 ## [1.3.0] — 2026-03-21
 
@@ -74,6 +182,42 @@ Format follows [Keep a Changelog](https://keepachangelog.com/). Versioning follo
 - **Caddy `/transmissions/*` route** — Virginia Caddy was not proxying individual transmission pages to FastAPI. Added `reverse_proxy` rule.
 
 ---
+
+## [1.5.0] — 2026-03-24
+
+### Academic Research Integration
+- **Research section created** on agenticeconomy.dev with 3 papers, citation meta tags, downloadable PDFs.
+- **3 academic papers published** on Zenodo with permanent DOIs: CRI (9pp/16refs), Taxonomy (20pp/25refs), Oracle Problem (14pp/23refs).
+- **Research nav link** added to all pages across botnode.io, botnode.dev, and agenticeconomy.dev.
+- **Academic Research cards** (R1/R2/R3) added to botnode.io Documentation section.
+- **Hero credibility line** on botnode.io: 3 papers, 39 pages, 62 references, 5 Nobel laureates.
+- **Inline paper links** in botnode.io CRI, Law V, comparison table, and FAQ sections.
+- **Research footer column** added to botnode.io and botnode.dev.
+- **Taxonomy reference** and methodology note added to agenticeconomy.dev/landscape/.
+- **Paper DOI links** added to Foundations section on agenticeconomy.dev landing.
+
+### Data Corrections
+- **SSRN/arXiv replaced** with Zenodo across all 4 websites.
+- **Paper dates corrected** to March 2026 (was April/May for papers 2 and 3).
+- **Preprint references** updated to Published with DOI links.
+- **Bluepaper (not yet public)** corrected on renedechamps.com.
+
+### OG Tags and Social Previews
+- **OG images generated** (1200x630 PNG) for agenticeconomy.dev root, /research/, /landscape/, and botnode.dev.
+- **SVG og:image replaced** with PNG on agenticeconomy.dev (crawlers do not render SVG).
+- **Full OG and Twitter meta tags** added to /research/ page.
+
+### Infrastructure
+- **agenticeconomy.dev migrated** from Hostinger to Virginia (Caddy). AAAA record removed.
+- **Webhook relay** for mariaotamendi.es on Stockholm (port 3200) with Caddy proxy on Virginia.
+- **Mac Mini relay service** (port 8180, launchd) for OpenClaw WhatsApp integration.
+
+### renedechamps.com
+- **About Chapter 12** updated with papers and DOI links.
+- **Blog posts** updated with research addendum; arXiv corrected to Zenodo.
+- **Writing/Blog index** Research section with 3 paper entries.
+- **Contact page** Developer Portal, Open Specification, Research added; @BotNodeio added.
+- **Global footer** botnode.io, botnode.dev, agenticeconomy.dev links on all pages.
 
 ## [1.2.1] — 2026-03-21
 
@@ -106,6 +250,42 @@ Format follows [Keep a Changelog](https://keepachangelog.com/). Versioning follo
 
 ---
 
+## [1.5.0] — 2026-03-24
+
+### Academic Research Integration
+- **Research section created** on agenticeconomy.dev with 3 papers, citation meta tags, downloadable PDFs.
+- **3 academic papers published** on Zenodo with permanent DOIs: CRI (9pp/16refs), Taxonomy (20pp/25refs), Oracle Problem (14pp/23refs).
+- **Research nav link** added to all pages across botnode.io, botnode.dev, and agenticeconomy.dev.
+- **Academic Research cards** (R1/R2/R3) added to botnode.io Documentation section.
+- **Hero credibility line** on botnode.io: 3 papers, 39 pages, 62 references, 5 Nobel laureates.
+- **Inline paper links** in botnode.io CRI, Law V, comparison table, and FAQ sections.
+- **Research footer column** added to botnode.io and botnode.dev.
+- **Taxonomy reference** and methodology note added to agenticeconomy.dev/landscape/.
+- **Paper DOI links** added to Foundations section on agenticeconomy.dev landing.
+
+### Data Corrections
+- **SSRN/arXiv replaced** with Zenodo across all 4 websites.
+- **Paper dates corrected** to March 2026 (was April/May for papers 2 and 3).
+- **Preprint references** updated to Published with DOI links.
+- **Bluepaper (not yet public)** corrected on renedechamps.com.
+
+### OG Tags and Social Previews
+- **OG images generated** (1200x630 PNG) for agenticeconomy.dev root, /research/, /landscape/, and botnode.dev.
+- **SVG og:image replaced** with PNG on agenticeconomy.dev (crawlers do not render SVG).
+- **Full OG and Twitter meta tags** added to /research/ page.
+
+### Infrastructure
+- **agenticeconomy.dev migrated** from Hostinger to Virginia (Caddy). AAAA record removed.
+- **Webhook relay** for mariaotamendi.es on Stockholm (port 3200) with Caddy proxy on Virginia.
+- **Mac Mini relay service** (port 8180, launchd) for OpenClaw WhatsApp integration.
+
+### renedechamps.com
+- **About Chapter 12** updated with papers and DOI links.
+- **Blog posts** updated with research addendum; arXiv corrected to Zenodo.
+- **Writing/Blog index** Research section with 3 paper entries.
+- **Contact page** Developer Portal, Open Specification, Research added; @BotNodeio added.
+- **Global footer** botnode.io, botnode.dev, agenticeconomy.dev links on all pages.
+
 ## [1.2.0] — 2026-03-21
 
 ### Added
@@ -131,6 +311,42 @@ Format follows [Keep a Changelog](https://keepachangelog.com/). Versioning follo
 - **New DB tables**: `daily_active_nodes`, `funnel_events`, `cri_snapshots`. Columns `country_code` + `country_name` added to `nodes`.
 
 ---
+
+## [1.5.0] — 2026-03-24
+
+### Academic Research Integration
+- **Research section created** on agenticeconomy.dev with 3 papers, citation meta tags, downloadable PDFs.
+- **3 academic papers published** on Zenodo with permanent DOIs: CRI (9pp/16refs), Taxonomy (20pp/25refs), Oracle Problem (14pp/23refs).
+- **Research nav link** added to all pages across botnode.io, botnode.dev, and agenticeconomy.dev.
+- **Academic Research cards** (R1/R2/R3) added to botnode.io Documentation section.
+- **Hero credibility line** on botnode.io: 3 papers, 39 pages, 62 references, 5 Nobel laureates.
+- **Inline paper links** in botnode.io CRI, Law V, comparison table, and FAQ sections.
+- **Research footer column** added to botnode.io and botnode.dev.
+- **Taxonomy reference** and methodology note added to agenticeconomy.dev/landscape/.
+- **Paper DOI links** added to Foundations section on agenticeconomy.dev landing.
+
+### Data Corrections
+- **SSRN/arXiv replaced** with Zenodo across all 4 websites.
+- **Paper dates corrected** to March 2026 (was April/May for papers 2 and 3).
+- **Preprint references** updated to Published with DOI links.
+- **Bluepaper (not yet public)** corrected on renedechamps.com.
+
+### OG Tags and Social Previews
+- **OG images generated** (1200x630 PNG) for agenticeconomy.dev root, /research/, /landscape/, and botnode.dev.
+- **SVG og:image replaced** with PNG on agenticeconomy.dev (crawlers do not render SVG).
+- **Full OG and Twitter meta tags** added to /research/ page.
+
+### Infrastructure
+- **agenticeconomy.dev migrated** from Hostinger to Virginia (Caddy). AAAA record removed.
+- **Webhook relay** for mariaotamendi.es on Stockholm (port 3200) with Caddy proxy on Virginia.
+- **Mac Mini relay service** (port 8180, launchd) for OpenClaw WhatsApp integration.
+
+### renedechamps.com
+- **About Chapter 12** updated with papers and DOI links.
+- **Blog posts** updated with research addendum; arXiv corrected to Zenodo.
+- **Writing/Blog index** Research section with 3 paper entries.
+- **Contact page** Developer Portal, Open Specification, Research added; @BotNodeio added.
+- **Global footer** botnode.io, botnode.dev, agenticeconomy.dev links on all pages.
 
 ## [1.1.0] — 2026-03-20
 
@@ -165,6 +381,42 @@ Format follows [Keep a Changelog](https://keepachangelog.com/). Versioning follo
 - **DB audit trigger** — `_task_audit` table logs every task status change with client address (installed during ghost debugging, retained for observability).
 
 ---
+
+## [1.5.0] — 2026-03-24
+
+### Academic Research Integration
+- **Research section created** on agenticeconomy.dev with 3 papers, citation meta tags, downloadable PDFs.
+- **3 academic papers published** on Zenodo with permanent DOIs: CRI (9pp/16refs), Taxonomy (20pp/25refs), Oracle Problem (14pp/23refs).
+- **Research nav link** added to all pages across botnode.io, botnode.dev, and agenticeconomy.dev.
+- **Academic Research cards** (R1/R2/R3) added to botnode.io Documentation section.
+- **Hero credibility line** on botnode.io: 3 papers, 39 pages, 62 references, 5 Nobel laureates.
+- **Inline paper links** in botnode.io CRI, Law V, comparison table, and FAQ sections.
+- **Research footer column** added to botnode.io and botnode.dev.
+- **Taxonomy reference** and methodology note added to agenticeconomy.dev/landscape/.
+- **Paper DOI links** added to Foundations section on agenticeconomy.dev landing.
+
+### Data Corrections
+- **SSRN/arXiv replaced** with Zenodo across all 4 websites.
+- **Paper dates corrected** to March 2026 (was April/May for papers 2 and 3).
+- **Preprint references** updated to Published with DOI links.
+- **Bluepaper (not yet public)** corrected on renedechamps.com.
+
+### OG Tags and Social Previews
+- **OG images generated** (1200x630 PNG) for agenticeconomy.dev root, /research/, /landscape/, and botnode.dev.
+- **SVG og:image replaced** with PNG on agenticeconomy.dev (crawlers do not render SVG).
+- **Full OG and Twitter meta tags** added to /research/ page.
+
+### Infrastructure
+- **agenticeconomy.dev migrated** from Hostinger to Virginia (Caddy). AAAA record removed.
+- **Webhook relay** for mariaotamendi.es on Stockholm (port 3200) with Caddy proxy on Virginia.
+- **Mac Mini relay service** (port 8180, launchd) for OpenClaw WhatsApp integration.
+
+### renedechamps.com
+- **About Chapter 12** updated with papers and DOI links.
+- **Blog posts** updated with research addendum; arXiv corrected to Zenodo.
+- **Writing/Blog index** Research section with 3 paper entries.
+- **Contact page** Developer Portal, Open Specification, Research added; @BotNodeio added.
+- **Global footer** botnode.io, botnode.dev, agenticeconomy.dev links on all pages.
 
 ## [1.0.0] — 2026-03-19
 
