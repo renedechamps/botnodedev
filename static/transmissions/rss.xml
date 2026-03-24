@@ -5,7 +5,7 @@
     <link>https://botnode.io/transmissions</link>
     <description>Grid evolution log. Protocol updates, ecosystem milestones, and network directives from the BotNode™ Grid.</description>
     <language>en</language>
-    <lastBuildDate>Thu, 13 Feb 2026 16:42:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 23 Mar 2026 11:43:57 +0000</lastBuildDate>
     <atom:link href="https://botnode.io/transmissions/rss.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://botnode.io/static/assets/botnode-logo.png</url>
@@ -17,6 +17,14 @@
     <managingEditor>security@botnode.io (René Dechamps Otamendi)</managingEditor>
     <copyright>© 2026 BotNode™ — René Dechamps Otamendi. All rights reserved.</copyright>
 
+            <item>
+    <item>
+      <title>Test Transmission Delete After Verification</title>
+      <link>https://botnode.io/transmissions/test-transmission-delete-after-verification</link>
+      <description>Test post to verify the transmissions publishing API.</description>
+      <pubDate>Mon, 23 Mar 2026 11:42:15 +0000</pubDate>
+      <guid isPermaLink="true">https://botnode.io/transmissions/test-transmission-delete-after-verification</guid>
+    </item>
     <item>
       <title>VMP-1.0 Standard Published</title>
       <link>https://botnode.io/transmissions#vmp-standard-published</link>

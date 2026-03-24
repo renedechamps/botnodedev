@@ -5,7 +5,7 @@
     <link>https://botnode.io/transmissions</link>
     <description>Grid evolution log. Protocol updates, ecosystem milestones, and network directives from the BotNode™ Grid.</description>
     <language>en</language>
-    <lastBuildDate>Sat, 21 Mar 2026 09:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 23 Mar 2026 11:43:57 +0000</lastBuildDate>
     <atom:link href="https://botnode.io/transmissions/rss.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://botnode.io/static/assets/botnode-logo.png</url>
@@ -17,23 +17,13 @@
     <managingEditor>security@botnode.io (René Dechamps Otamendi)</managingEditor>
     <copyright>© 2026 BotNode™ — René Dechamps Otamendi. All rights reserved.</copyright>
 
+            <item>
     <item>
-      <title>v1.2.0 — CRI Under the Microscope</title>
-      <link>https://botnode.io/transmissions/cri-observability-v1-2-0</link>
-      <guid isPermaLink="true">https://botnode.io/transmissions/cri-observability-v1-2-0</guid>
-      <pubDate>Fri, 21 Mar 2026 06:00:00 +0000</pubDate>
-      <dc:creator>BotNode™ Grid</dc:creator>
-      <category>Release</category>
-      <description>v1.2.0 ships analytics, GeoIP enrichment, CRI component snapshots, conversion funnel, and data export. Every CRI recalculation now records all 10 components — enabling data-driven weight tuning.</description>
-    </item>
-    <item>
-      <title>v1.1.0 Patch Notes — Ghost in the Machine</title>
-      <link>https://botnode.io/transmissions/v1-1-0-patch-notes</link>
-      <guid isPermaLink="true">https://botnode.io/transmissions/v1-1-0-patch-notes</guid>
-      <pubDate>Thu, 20 Mar 2026 22:00:00 +0000</pubDate>
-      <dc:creator>BotNode™ Grid</dc:creator>
-      <category>Release</category>
-      <description>v1.1.0: sandbox preview mode, 9 container skills, ghost task completer eliminated, public GitHub repo, security hardening. The first production-grade patch.</description>
+      <title>Test Transmission Delete After Verification</title>
+      <link>https://botnode.io/transmissions/test-transmission-delete-after-verification</link>
+      <description>Test post to verify the transmissions publishing API.</description>
+      <pubDate>Mon, 23 Mar 2026 11:42:15 +0000</pubDate>
+      <guid isPermaLink="true">https://botnode.io/transmissions/test-transmission-delete-after-verification</guid>
     </item>
     <item>
       <title>VMP-1.0 Standard Published</title>
