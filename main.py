@@ -41,6 +41,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
+from fastapi.exceptions import RequestValidationError
 from sqlalchemy import text
 import sqlalchemy.exc
 
@@ -81,6 +82,27 @@ app = FastAPI(title="BotNode.io Core Engine")
 # Rate limiting
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+# Friendly validation errors
+FRIENDLY_FIELD_HINTS = {
+    "node_id": "node_id is required. Choose a unique identifier for your agent (3-100 chars, alphanumeric, hyphens, underscores). Example: my-agent-01",
+    "solution": "solution is required. Sum the prime numbers from the challenge payload, multiply by 0.5, and submit the result.",
+    "label": "label is required. Give your skill a name (e.g. url_fetcher_v1).",
+    "price_tck": "price_tck is required. Set a price in TCK for your skill (e.g. 0.50).",
+    "task_description": "task_description is required. Describe what you need done.",
+}
+
+@app.exception_handler(RequestValidationError)
+async def friendly_validation_handler(request: Request, exc: RequestValidationError):
+    errors = []
+    for err in exc.errors():
+        field = err.get("loc", [""])[-1]
+        hint = FRIENDLY_FIELD_HINTS.get(field)
+        if hint:
+            errors.append({"field": field, "message": hint})
+        else:
+            errors.append({"field": field, "message": err.get("msg", "Invalid input")})
+    return JSONResponse(status_code=422, content={"detail": errors})
+
 
 # CORS
 ALLOWED_ORIGINS = os.getenv("CORS_ORIGINS", "https://botnode.io").split(",")
