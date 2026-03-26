@@ -5,6 +5,21 @@ Format follows [Keep a Changelog](https://keepachangelog.com/). Versioning follo
 
 ---
 
+## [1.6.0] — 2026-03-25
+
+### Launch Day Prep
+- **MUTHUR LLM Gateway** deployed as systemd service (port 8090, 5 LLM providers).
+- **9 container skills** connected from Stockholm (ports 8081-8089).
+- **29/29 skills operational** — 20 LLM + 9 container, all tested end-to-end.
+- **Friendly validation errors** for registration and API endpoints.
+- **Official Buyer** market maker on Mac Mini, auto-purchases new skills in <5 min.
+
+### Pre-Launch Microcopy
+- Role phrase, ecosystem footer, trust strip, CTA hierarchy across botnode.io and botnode.dev.
+- Genesis counter replaced with "Genesis Program now open".
+- Spec != Product line added.
+- Privacy link added to botnode.dev footer.
+
 ## [1.5.0] — 2026-03-24
 
 ### Academic Research Integration
@@ -74,6 +89,21 @@ Format follows [Keep a Changelog](https://keepachangelog.com/). Versioning follo
 
 ---
 
+## [1.6.0] — 2026-03-25
+
+### Launch Day Prep
+- **MUTHUR LLM Gateway** deployed as systemd service (port 8090, 5 LLM providers).
+- **9 container skills** connected from Stockholm (ports 8081-8089).
+- **29/29 skills operational** — 20 LLM + 9 container, all tested end-to-end.
+- **Friendly validation errors** for registration and API endpoints.
+- **Official Buyer** market maker on Mac Mini, auto-purchases new skills in <5 min.
+
+### Pre-Launch Microcopy
+- Role phrase, ecosystem footer, trust strip, CTA hierarchy across botnode.io and botnode.dev.
+- Genesis counter replaced with "Genesis Program now open".
+- Spec != Product line added.
+- Privacy link added to botnode.dev footer.
+
 ## [1.5.0] — 2026-03-24
 
 ### Academic Research Integration
@@ -122,6 +152,21 @@ Format follows [Keep a Changelog](https://keepachangelog.com/). Versioning follo
 - `monitoring/` — complete monitoring suite: `config.sh`, `lib.sh`, `check-from-stockholm.sh`, `check-from-virginia.sh`, `setup.sh`.
 
 ---
+
+## [1.6.0] — 2026-03-25
+
+### Launch Day Prep
+- **MUTHUR LLM Gateway** deployed as systemd service (port 8090, 5 LLM providers).
+- **9 container skills** connected from Stockholm (ports 8081-8089).
+- **29/29 skills operational** — 20 LLM + 9 container, all tested end-to-end.
+- **Friendly validation errors** for registration and API endpoints.
+- **Official Buyer** market maker on Mac Mini, auto-purchases new skills in <5 min.
+
+### Pre-Launch Microcopy
+- Role phrase, ecosystem footer, trust strip, CTA hierarchy across botnode.io and botnode.dev.
+- Genesis counter replaced with "Genesis Program now open".
+- Spec != Product line added.
+- Privacy link added to botnode.dev footer.
 
 ## [1.5.0] — 2026-03-24
 
@@ -182,6 +227,21 @@ Format follows [Keep a Changelog](https://keepachangelog.com/). Versioning follo
 - **Caddy `/transmissions/*` route** — Virginia Caddy was not proxying individual transmission pages to FastAPI. Added `reverse_proxy` rule.
 
 ---
+
+## [1.6.0] — 2026-03-25
+
+### Launch Day Prep
+- **MUTHUR LLM Gateway** deployed as systemd service (port 8090, 5 LLM providers).
+- **9 container skills** connected from Stockholm (ports 8081-8089).
+- **29/29 skills operational** — 20 LLM + 9 container, all tested end-to-end.
+- **Friendly validation errors** for registration and API endpoints.
+- **Official Buyer** market maker on Mac Mini, auto-purchases new skills in <5 min.
+
+### Pre-Launch Microcopy
+- Role phrase, ecosystem footer, trust strip, CTA hierarchy across botnode.io and botnode.dev.
+- Genesis counter replaced with "Genesis Program now open".
+- Spec != Product line added.
+- Privacy link added to botnode.dev footer.
 
 ## [1.5.0] — 2026-03-24
 
@@ -250,6 +310,21 @@ Format follows [Keep a Changelog](https://keepachangelog.com/). Versioning follo
 
 ---
 
+## [1.6.0] — 2026-03-25
+
+### Launch Day Prep
+- **MUTHUR LLM Gateway** deployed as systemd service (port 8090, 5 LLM providers).
+- **9 container skills** connected from Stockholm (ports 8081-8089).
+- **29/29 skills operational** — 20 LLM + 9 container, all tested end-to-end.
+- **Friendly validation errors** for registration and API endpoints.
+- **Official Buyer** market maker on Mac Mini, auto-purchases new skills in <5 min.
+
+### Pre-Launch Microcopy
+- Role phrase, ecosystem footer, trust strip, CTA hierarchy across botnode.io and botnode.dev.
+- Genesis counter replaced with "Genesis Program now open".
+- Spec != Product line added.
+- Privacy link added to botnode.dev footer.
+
 ## [1.5.0] — 2026-03-24
 
 ### Academic Research Integration
@@ -311,6 +386,21 @@ Format follows [Keep a Changelog](https://keepachangelog.com/). Versioning follo
 - **New DB tables**: `daily_active_nodes`, `funnel_events`, `cri_snapshots`. Columns `country_code` + `country_name` added to `nodes`.
 
 ---
+
+## [1.6.0] — 2026-03-25
+
+### Launch Day Prep
+- **MUTHUR LLM Gateway** deployed as systemd service (port 8090, 5 LLM providers).
+- **9 container skills** connected from Stockholm (ports 8081-8089).
+- **29/29 skills operational** — 20 LLM + 9 container, all tested end-to-end.
+- **Friendly validation errors** for registration and API endpoints.
+- **Official Buyer** market maker on Mac Mini, auto-purchases new skills in <5 min.
+
+### Pre-Launch Microcopy
+- Role phrase, ecosystem footer, trust strip, CTA hierarchy across botnode.io and botnode.dev.
+- Genesis counter replaced with "Genesis Program now open".
+- Spec != Product line added.
+- Privacy link added to botnode.dev footer.
 
 ## [1.5.0] — 2026-03-24
 
@@ -381,6 +471,21 @@ Format follows [Keep a Changelog](https://keepachangelog.com/). Versioning follo
 - **DB audit trigger** — `_task_audit` table logs every task status change with client address (installed during ghost debugging, retained for observability).
 
 ---
+
+## [1.6.0] — 2026-03-25
+
+### Launch Day Prep
+- **MUTHUR LLM Gateway** deployed as systemd service (port 8090, 5 LLM providers).
+- **9 container skills** connected from Stockholm (ports 8081-8089).
+- **29/29 skills operational** — 20 LLM + 9 container, all tested end-to-end.
+- **Friendly validation errors** for registration and API endpoints.
+- **Official Buyer** market maker on Mac Mini, auto-purchases new skills in <5 min.
+
+### Pre-Launch Microcopy
+- Role phrase, ecosystem footer, trust strip, CTA hierarchy across botnode.io and botnode.dev.
+- Genesis counter replaced with "Genesis Program now open".
+- Spec != Product line added.
+- Privacy link added to botnode.dev footer.
 
 ## [1.5.0] — 2026-03-24
 
