@@ -8,11 +8,23 @@ have happened."
 Use case: enterprise CTOs connecting 50+ agents who want to observe
 BotNode's behavior before committing real value.  "Connect and
 observe; decide later whether to activate real settlement."
+
+**Protocol-route parameter (added 2026-05-23 for SN-3/SN-4 evaluation):**
+``POST /v1/shadow/tasks/create`` accepts an optional ``protocol_route``
+query parameter. The default (``"shadow"``) preserves the original
+behaviour; setting it to ``"api"``, ``"a2a"``, ``"mcp"``, or ``"sdk"``
+stores that string in ``task.protocol`` so the test harness can issue
+canonical-equivalent shadow tasks via each protocol path and verify
+that the CRI delta and the dispute outcome are protocol-independent
+(the SN-3 / SN-4 cross-protocol equivalence tests). The settlement
+engine path is unchanged; this only affects the ``task.protocol``
+field, which is otherwise hardcoded to ``"shadow"``.
 """
 
 from decimal import Decimal
+from typing import Optional
 
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy.orm import Session
 
 import models
@@ -23,9 +35,29 @@ from config import PENDING_ESCROW_TIMEOUT, DISPUTE_WINDOW
 router = APIRouter(tags=["shadow"])
 
 
+# Allowed values for the protocol_route query parameter. Mirrors the
+# values that `task.protocol` accepts in production (see models.Task —
+# the field's docstring lists ``mcp, a2a, api, sdk``). We accept the
+# literal ``shadow`` as well to keep the previous default behaviour.
+_ALLOWED_PROTOCOL_ROUTES = {"shadow", "api", "a2a", "mcp", "sdk"}
+
+
 @router.post("/v1/shadow/tasks/create")
 def create_shadow_task(
     data: schemas.TaskCreate,
+    protocol_route: Optional[str] = Query(
+        default="shadow",
+        description=(
+            "Optional protocol-route label written to ``task.protocol``. "
+            "One of ``shadow`` (default, original behaviour), ``api``, "
+            "``a2a``, ``mcp``, or ``sdk``. Used by the SN-3/SN-4 cross-"
+            "protocol equivalence test harness to issue canonical-"
+            "equivalent shadow tasks via each protocol path and verify "
+            "protocol-independence of the CRI update and dispute outcome. "
+            "The settlement engine path is unaffected — only the stored "
+            "``task.protocol`` value changes."
+        ),
+    ),
     buyer: models.Node = Depends(get_node),
     db: Session = Depends(get_db),
 ) -> dict:
@@ -38,6 +70,15 @@ def create_shadow_task(
 
     Auth: API key.
     """
+    if protocol_route not in _ALLOWED_PROTOCOL_ROUTES:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"protocol_route must be one of "
+                f"{sorted(_ALLOWED_PROTOCOL_ROUTES)}; got {protocol_route!r}"
+            ),
+        )
+
     skill = db.query(models.Skill).filter(models.Skill.id == data.skill_id).first()
     if not skill:
         raise HTTPException(status_code=404, detail="Skill not found")
@@ -61,7 +102,7 @@ def create_shadow_task(
         input_data=data.input_data,
         status="OPEN",
         escrow_id=escrow.id,
-        protocol="shadow",
+        protocol=protocol_route,
         is_shadow=True,
     )
     db.add(task)
@@ -72,6 +113,7 @@ def create_shadow_task(
         "escrow_id": escrow.id,
         "status": "SHADOW_QUEUED",
         "shadow": True,
+        "protocol_route": protocol_route,
         "simulated_cost": str(skill.price_tck),
         "simulated_tax": str(skill.price_tck * Decimal("0.03")),
         "simulated_payout": str(skill.price_tck * Decimal("0.97")),
@@ -120,6 +162,7 @@ def simulate_settlement(
     return {
         "task_id": task.id,
         "shadow": True,
+        "protocol_route": task.protocol,
         "simulation": {
             "outcome": outcome,
             "dispute_engine": {
