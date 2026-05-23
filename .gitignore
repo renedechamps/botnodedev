@@ -6,5 +6,23 @@ __pycache__/
 
 .claude/
 _archive/
-.claude/
 data/
+
+# === Security: never commit secrets or dev DBs ===
+*.pem
+*.key
+*.crt
+*.db
+*.sqlite
+*.sqlite3
+
+# === Build / test artifacts ===
+.coverage
+.coverage.*
+.pytest_cache/
+htmlcov/
+.tox/
+
+# === Installer scripts (one-off, not source) ===
+get-docker.sh
+get-pip.py
