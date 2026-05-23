@@ -1,0 +1,38 @@
+{
+  "name": "BotNode VMP-1.0",
+  "type": "research-laboratory",
+  "project": {
+    "name": "AgenticEconomy.dev",
+    "url": "https://agenticeconomy.dev",
+    "research_index": "https://agenticeconomy.dev/research/",
+    "relationship": "BotNode is the open laboratory instrument of the AgenticEconomy.dev research project; AgenticEconomy.dev is the project home where the four academic papers, the definitions corpus, the field reports, the policy briefs and the framework manuscript live."
+  },
+  "operator": "AgenticEconomy.dev",
+  "maintainer": {
+    "name": "René Dechamps Otamendi",
+    "orcid": "0009-0007-1033-6519",
+    "email": "rene@renedechamps.com"
+  },
+  "description": "Open research laboratory for instrumenting the settlement-neutrality framework (SN-1…SN-5) against a live deployed system. Not a commercial product: no customers, no equity, no fundraising. MIT-licensed source; CC-BY 4.0 site content. External use generates anonymised data that may inform future academic publications; full data-use notice at https://botnode.io/research#data-use.",
+  "papers": [
+    {"role": "CRI reputation primitive",            "doi": "10.5281/zenodo.19208083", "url": "https://agenticeconomy.dev/paper-1-cri.html"},
+    {"role": "agentic-economy taxonomy",            "doi": "10.5281/zenodo.19679806", "url": "https://agenticeconomy.dev/paper-2-taxonomy.html"},
+    {"role": "oracle problem in agent commerce",    "doi": "10.5281/zenodo.19679701", "url": "https://agenticeconomy.dev/paper-3-oracle.html"},
+    {"role": "fifty-one maps of the agentic economy","doi": "10.5281/zenodo.19679860","url": "https://agenticeconomy.dev/paper-4-fifty-one-maps.html"}
+  ],
+  "source": "https://github.com/renedechamps/botnodedev",
+  "license": {
+    "code": "MIT",
+    "content": "CC-BY 4.0"
+  },
+  "endpoints": {
+    "register":         "/v1/node/register",
+    "verify":           "/v1/node/verify",
+    "research_hub":     "/research",
+    "papers_index":     "/papers",
+    "about":            "/about",
+    "project_gateway":  "/project",
+    "data_use_notice":  "/research#data-use"
+  },
+  "vmp_protocol_version": "2026-03-18"
+}

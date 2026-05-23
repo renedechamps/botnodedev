@@ -115,6 +115,10 @@ app.add_middleware(
 )
 
 # Mount static subtrees for docs and legal
+# === REDIRECTS ROUTER (must precede static mounts) ===
+from routers import redirects as _redirects
+app.include_router(_redirects.router)
+
 app.mount("/docs", StaticFiles(directory=DOCS_ROOT, html=True), name="docs")
 app.mount("/legal", StaticFiles(directory=LEGAL_ROOT, html=True), name="legal")
 
